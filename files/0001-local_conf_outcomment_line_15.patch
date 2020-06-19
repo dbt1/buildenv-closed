@@ -1,0 +1,20 @@
+From 8fdd5ed51bd31fe1900e7adc3c0db6446593d89d Mon Sep 17 00:00:00 2001
+From: Thilo Graf <dbt@novatux.de>
+Date: Wed, 28 Oct 2020 13:14:34 +0100
+Subject: local.conf: outcomment line 15
+
+Avoid clone of complete meta-openembeded.
+
+diff --git a/conf/layer.conf b/conf/layer.conf
+index a5738d96..ac632105 100644
+--- a/conf/layer.conf
++++ b/conf/layer.conf
+@@ -12,7 +12,7 @@ BBFILE_PRIORITY_meta-python2 = "7"
+ # cause compatibility issues with other layers
+ LAYERVERSION_meta-python2 = "1"
+ 
+-LAYERDEPENDS_meta-python2 = "core openembedded-layer"
++#LAYERDEPENDS_meta-python2 = "core openembedded-layer"
+ 
+ LAYERSERIES_COMPAT_meta-python2 = "gatesgarth"
+ 

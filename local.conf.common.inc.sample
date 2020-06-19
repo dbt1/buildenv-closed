@@ -1,0 +1,295 @@
+### Host variables
+#
+# Determine how many tasks bitbake should run in parallel:
+BB_NUMBER_THREADS ?= "8"
+#
+# Determine how many processes make should run in parallel when running compile tasks:
+PARALLEL_MAKE ?= "-j 4"
+
+DISTRO = "tuxbox"
+
+
+### System variables
+#
+#DL_DIR ?= "${COREBASE}/yocto-downloads"
+DL_DIR = "${HOME}/Downloads"
+
+### sdk options
+#
+#SDKMACHINE ?= "i686"
+SDKMACHINE = "x86_64"
+#SDKIMAGE_FEATURES="dev-pkgs dbg-pkgs src-pkgs "
+
+
+### time zone
+#
+DEFAULT_TIMEZONE = "Europe/Berlin"
+
+
+### base build and source directory
+#
+YOCTO_BASEDIR = "${COREBASE}"
+
+
+### Disk Space Monitoring during the build
+#
+BB_DISKMON_DIRS = "\
+    STOPTASKS,${TMPDIR},1G,100K \
+    STOPTASKS,${DL_DIR},1G,100K \
+    STOPTASKS,${SSTATE_DIR},1G,100K \
+    ABORT,${TMPDIR},100M,1K \
+    ABORT,${DL_DIR},100M,1K \
+    ABORT,${SSTATE_DIR},100M,1K" 
+
+
+### Hash Equivalence
+#
+# Enable support for automatically running a local hash equivalence server and
+# instruct bitbake to use a hash equivalence aware signature generator. Hash
+# equivalence improves reuse of sstate by detecting when a given sstate
+# artifact can be reused as equivalent, even if the current task hash doesn't
+# match the one that generated the artifact.
+#
+# A shared hash equivalent server can be set with "<HOSTNAME>:<PORT>" format+#
+#
+BB_HASHSERVE = "auto"
+BB_SIGNATURE_HANDLER = "OEEquivHash"
+
+BB_DANGLINGAPPENDS_WARNONLY = "1"
+
+### Qemu configuration
+#
+PACKAGECONFIG_pn-qemu-native = "sdl"
+
+CONF_VERSION = "1"
+
+
+### Image settings
+# Image size:
+# possible are "small" or "normal" (normal means the same like empty string)
+#
+#IMAGESIZE = "normal"
+#IMAGESIZE = "small"
+#
+# Which neutrino source will be used:
+# Choose neutrino source. Possible values are "tuxbox", "tango" or "ni"
+# Note: Successful build of foreign neutrino source is not guaranteed.
+#
+FLAVOUR = "tuxbox"
+#
+# Name of the image, default target name "neutrino-image"
+#IMAGE_BASENAME = "neutrino-image"
+IMAGE_BASENAME = "${SDK_NAME}"
+#
+# Image version tags:
+# Allow usage of customized version tag within image file name. Default = "1" means: not allowed
+# For default result: neutrino-image-hd51-20200926170603_ofgwrite.zip
+INHIBIT_EXTENDED_IMAGE_VERSION = "1"
+#
+# For customized results:
+#INHIBIT_EXTENDED_IMAGE_VERSION = "0"
+# If INHIBIT_EXTENDED_IMAGE_VERSION = 0 then you can use the following options to create useful version labels for image files.
+#
+# Modify ${DISTRO_VERSION_NUMBER} for extended or custom version tag with what ever you want. This will be append a tag to the output file names, keep empty for nothing.
+# sample result, without any effect: neutrino-image_hd51-20200926170603_usb.zip
+#DISTRO_CUSTOM_VERSION = ""
+#
+# sample result: neutrino-image_hd51-20200926170603_v2020.39_usb.zip
+#DISTRO_CUSTOM_VERSION = "2020.39"
+#
+# sample result with increment: neutrino-image_hd51-20200926170603_v20.0_usb.zip
+# Result for next build will be: neutrino-image_hd51-20200926170603_v20.1_usb.zip
+#DISTRO_CUSTOM_VERSION = "${IMAGE_YEARLY_TAG}.${IMAGE_BUILD_INCREMENT}"
+
+
+### default image root password
+# set initial password for user root. Keep empty for root:
+#
+ROOTPW = ""
+
+
+### Choose which plugins should be installed
+#
+PLUGIN_INSTALL += "msgbox tuxcom shellexec input tuxwetter"
+
+
+### Add Image Maintainer here
+#
+CREATOR = "${USER}"
+KBUILD_BUILD_USER = "${CREATOR}"
+KBUILD_BUILD_HOST = "blue"
+
+
+### git configuration ... needed for etckeeper
+#
+GIT_USER = "root"
+MAIL = "root@tuxbox-${MACHINE}"
+
+
+### dev keys for neutrino gui
+# NOTE: Here you see empty entries! NOT WORKING!
+#
+# You can also include a file eg. named "local.conf.devkeys.inc"
+# and add these lines into your included file:
+# include /<path>/<to>/local.conf.devkeys.inc
+YT_DEV_KEY = ""
+TMDB_DEV_KEY = ""
+SHOUTCAST_DEV_KEY = ""
+OMDB_API_KEY = ""
+WEATHER_DEV_KEY = ""
+
+
+### extra build config options for neutrino build
+# e.g: to enable the neutrino test menu
+#EXTRA_OECONF_append_pn-neutrino-mp = " \
+#	--enable-testing \
+#"
+#EXTRA_OECONF_append_pn-gdb = "--with-system-gdbinit=/etc/gdbinit"
+
+
+### package feed configuration
+#
+PACKAGE_CLASSES ?= "package_ipk"
+#
+### Update feeds
+# Web server from which packages and images are updated. Points as default to this host
+# URL-template (only local in this config file)
+# for usage of these url's you should make a symlink as super user to the image and package directories
+#
+#UPDATE_SERVER_URL = "http://${KBUILD_BUILD_HOST}"
+#UPDATE_SERVER_URL = "http://192.168.1.202"
+#UPDATE_SERVER_URL = "http://localhost"
+#UPDATE_SERVER_URL = "file:///var/www/html"
+UPDATE_SERVER_URL = "https://update.tuxbox-neutrino.org"
+
+### Package manager configuration
+#
+#IPK_FEED_SERVER = "file:///media/sda1/service/ipk"
+# local feed if Tuxbox-Builder VM is in use
+DISTRO_FEED_VERSION = "${DISTRO_VERSION_NUMBER}"
+#DISTRO_FEED_VERSION = "3.2"
+IPK_FEED_SERVER = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACHINE}/ipk"
+
+
+### Image update configuration
+# IMAGE_LOCATION = "file:////media/sda1/service/image/flashimage.img"
+IMAGE_LOCATION = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACHINE}/images"
+
+# RELEASE_TEXT_LOCATION = "file:///media/sda1/service/image/imageversion"
+RELEASE_TEXT_LOCATION_HOST = "${DEPLOY_DIR_IMAGE}/beta.txt"
+RELEASE_TEXT_LOCATION = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACHINE}/images/beta.txt"
+#
+#
+# Image release state within release text, default = "0" (release), "1" (beta), 2 " (nightly)
+# This will be set as suffix within image version file in entry imagedescription
+#RELEASE_STATE = "0"
+RELEASE_STATE = "1"
+
+
+### Some additional lines for /etc/os-release and .version contents
+#
+OS_RELEASE_FIELDS_append = " HOME_URL SUPPORT_URL BUG_REPORT_URL BUILD_ID"
+HOME_URL = "https://github.com/tuxbox-neutrino"
+SUPPORT_URL = "https://wiki.tuxbox-neutrino.org"
+BUG_REPORT_URL = "https://forum.tuxbox-neutrino.org"
+
+### download mirrors
+#
+PREMIRRORS_prepend = "\
+     https://.*/.* https://archiv.tuxbox-neutrino.org/ \n \
+     git://.*/.* http://www.yoctoproject.org/sources/ \n \
+     ftp://.*/.* http://www.yoctoproject.org/sources/ \n \
+     http://.*/.* http://www.yoctoproject.org/sources/ \n \
+     https://.*/.* http://www.yoctoproject.org/sources/ \n \
+"
+
+#see: https://wiki.yoctoproject.org/wiki/How_do_I#Q:_How_do_I_create_my_own_source_download_mirror_.3F
+#
+SOURCE_MIRROR_URL ?= "https://archiv.tuxbox-neutrino.org"
+INHERIT += "own-mirrors" 
+BB_GENERATE_MIRROR_TARBALLS = "1" 
+#BB_NO_NETWORK = "1"
+
+PREMIRRORS_prepend = "\
+    file://.*/.*     file://${HOME}/Downloads/* \n"
+
+### Tip: use sstate mirrors
+#
+# Speed up your complete new package build or after deleted tmp dir or sstate-cache and guard against fetcher failures.
+# Official mirrors to find here: http://sstate.yoctoproject.org/
+# Ensure you have a fast internet. After 1st build you can disable this
+# SSTATE_MIRRORS += "\
+#     file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/2.7.3/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.0.3/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.1/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.1.1/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.1.2/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.2/PATH;downloadfilename=PATH \n \
+# "
+# This is our own stock of sstate cache related of last tuxbox builds.
+SSTATE_MIRRORS = "\
+     file://.* https://sstate.tuxbox-upload.de/all/sstate-cache/PATH;downloadfilename=PATH \n \
+"
+
+
+### masked recipes
+# This will ignore recipes to build.
+# NOTE: Some masked targets with related depends could break the build.
+# BBMASK += "/meta-neutrino/recipes-qt/qt5"
+
+# These entries replace default installed entries which are contained in ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
+# You can add more entries with variable IMAGE_INSTALL_append see below...
+#
+# IMAGE_INSTALL += " \
+# 	vsftpd \
+# "
+# IMAGE_INSTALL = " \
+# 	autofs \
+# 	ca-certificates \
+# 	curl \
+# 	dosfstools \
+# 	e2fsprogs \
+# 	e2fsprogs-resize2fs \
+# 	findutils \
+# 	gptfdisk \
+# 	hdparm \
+# 	ifupdown \
+# 	less \
+# 	libswscale \
+# 	libusb1 \
+# 	minidlna \
+# 	nano \
+# 	nfs-utils \
+# 	nfs-utils-client \
+# 	ntpdate \
+# 	ofgwrite \
+# 	openssh \
+# 	openssl \
+# 	opkg \
+# 	pv \
+# 	rpcbind \
+# 	rsync \
+# 	samsunglcd4linux \
+# 	tar \
+# 	tzdata \
+# 	tzdata-europe \
+# 	udev-extraconf \
+# 	udpxy \
+# 	util-linux-blkid \
+# 	util-linux-mount \
+# 	util-linux-swaponoff \
+# 	util-linux-umount \
+# 	virtual/screengrabber \
+# 	virtual/neutrino \
+# 	neutrino-plugins \
+# 	neutrino-lua-plugins \
+# 	neutrino-plugin-mediathek \
+# 	xupnpd \
+# 	zip \
+# "
+
+# Put additional packages that should be packaged into your image. Separated with a whitespace. or use IMAGE_INSTALL += ...
+#
+# IMAGE_INSTALL_append = " gdb-dbg glibc-dbg glibc-thread-db qtwebflix webmin rpm"
+# IMAGE_INSTALL_append = " gdb-dbg glibc-dbg glibc-thread-db webmin rpm"

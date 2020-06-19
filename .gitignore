@@ -1,0 +1,14 @@
+poky-*/
+tmp/
+.directory
+OLD
+meta-*
+update-scripts
+build-images
+build-neutrino
+local.conf.common.inc
+dist/*
+build*
+*.orig
+*.log
+
