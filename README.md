@@ -33,7 +33,7 @@ https://www.yoctoproject.org/docs/3.0.3/brief-yoctoprojectqs/brief-yoctoprojectq
 
 ## 1. Clone init script into a directory of your choice
 ```bash
-$:~ git clone https://github.com/Tuxbox-Project/build.git
+$:~ git clone https://github.com/tuxbox-neutrino/build.git
 ```
 
 ## 2. Change to the generated directory
