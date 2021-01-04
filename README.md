@@ -79,7 +79,7 @@ Other commonly useful commands are:
  - 'bitbake-layers' handles common layer tasks
  - 'oe-pkgdata-util' handles common target package tasks
 tuxbox@tuxbox-builder:~/Build/poky-3.0/hd51
-$ . ./oe-init-build-env hd51
+$
 ```
 NOTE: If you left the build directory you must retry step 5 for your machine type to recreate the required environment.
 
