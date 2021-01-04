@@ -195,17 +195,17 @@ BUG_REPORT_URL = "https://forum.tuxbox-neutrino.org"
 
 ### download mirrors
 #
-PREMIRRORS_prepend = "\
-     https://.*/.* https://archiv.tuxbox-neutrino.org/ \n \
-     git://.*/.* http://www.yoctoproject.org/sources/ \n \
-     ftp://.*/.* http://www.yoctoproject.org/sources/ \n \
-     http://.*/.* http://www.yoctoproject.org/sources/ \n \
-     https://.*/.* http://www.yoctoproject.org/sources/ \n \
-"
+# PREMIRRORS_prepend = "\
+#      https://.*/.* https://archiv.tuxbox-neutrino.org/ \n \
+#      git://.*/.* http://www.yoctoproject.org/sources/ \n \
+#      ftp://.*/.* http://www.yoctoproject.org/sources/ \n \
+#      http://.*/.* http://www.yoctoproject.org/sources/ \n \
+#      https://.*/.* http://www.yoctoproject.org/sources/ \n \
+# "
 
 #see: https://wiki.yoctoproject.org/wiki/How_do_I#Q:_How_do_I_create_my_own_source_download_mirror_.3F
 #
-SOURCE_MIRROR_URL ?= "https://archiv.tuxbox-neutrino.org"
+SOURCE_MIRROR_URL = "https://archiv.tuxbox-neutrino.org"
 INHERIT += "own-mirrors" 
 BB_GENERATE_MIRROR_TARBALLS = "1" 
 #BB_NO_NETWORK = "1"
