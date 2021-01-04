@@ -11,8 +11,8 @@ DISTRO = "tuxbox"
 
 ### System variables
 #
-#DL_DIR ?= "${COREBASE}/yocto-downloads"
-DL_DIR = "${HOME}/Downloads"
+DL_DIR = "${COREBASE}/yocto-downloads"
+#DL_DIR = "${HOME}/Archive"
 
 ### sdk options
 #
