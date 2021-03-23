@@ -5,6 +5,8 @@ BB_NUMBER_THREADS ?= "8"
 #
 # Determine how many processes make should run in parallel when running compile tasks:
 PARALLEL_MAKE ?= "-j 4"
+# Note: For your decision you can get information about core and threads at your machine with this command:
+#  ~ $  lscpu | grep -E '^Thread|^CPU\('
 
 DISTRO = "tuxbox"
 
