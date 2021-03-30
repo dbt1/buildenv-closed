@@ -99,9 +99,14 @@ INHIBIT_EXTENDED_IMAGE_VERSION = "1"
 # sample result: neutrino-image_hd51-20200926170603_v2020.39_usb.zip
 #DISTRO_CUSTOM_VERSION = "2020.39"
 #
-# sample result with increment: neutrino-image_hd51-20200926170603_v20.0_usb.zip
+# sample result with auto increment: neutrino-image_hd51-20200926170603_v20.0_usb.zip
 # Result for next build will be: neutrino-image_hd51-20200926170603_v20.1_usb.zip
 #DISTRO_CUSTOM_VERSION = "${IMAGE_YEARLY_TAG}.${IMAGE_BUILD_INCREMENT}"
+#
+# For user defined build increment you can generate manually (or how ever you want) a local increment file which cantains
+# at the first line an increment number, other lines will be ignored.
+# Sample result with local increment number '99' at the 1st line inside LOCAL_BUILD_INCREMENT_FILE: neutrino-image_hd51-20200926170603_v20.99_usb.zip
+#LOCAL_BUILD_INCREMENT_FILE = "${HOME}/build/image_build_increment"
 
 
 ### default image root password
