@@ -98,6 +98,10 @@ PYTHON2_LAYER_NAME=meta-python2
 PYTHON2_LAYER_GIT_URL=https://git.openembedded.org
 PYTHON2_LAYER_DO_UPDATE=1
 
+QT5_LAYER_NAME=meta-qt5
+QT5_LAYER_GIT_URL=https://github.com/meta-qt5
+QT5_LAYER_DO_UPDATE=1
+
 GIT_CLONE='git clone'
 GIT_PULL='git pull -r'
 GIT_STASH='git stash'
@@ -226,6 +230,49 @@ function clone_meta_python2 () {
 	fi
 }
 
+# clone or update required branch for qt5
+function clone_meta_qt5 () {
+	META_MACHINE_LAYER=meta-$1
+
+	if [ $QT5_LAYER_DO_UPDATE == "1" ] && [ "$IMAGE_VERSION" != "3.0" ] && [ "$IMAGE_VERSION" != "3.1" ] && test -d $BUILD_ROOT_DIR/$META_MACHINE_LAYER/recipes-multimedia/kodi; then
+
+		$CURRENT_QT_LAYER_BRANCH
+
+		if test ! -d $BUILD_ROOT_DIR/$QT5_LAYER_NAME/.git; then
+			echo -e "\033[35;1mCLONE $QT5_LAYER_NAME:\033[0m\nclone $QT5_LAYER_NAME (branch $YOCTO_BRANCH_NAME) from $QT5_LAYER_GIT_URL ..."
+			do_exec "cd $BUILD_ROOT_DIR"
+			do_exec "$GIT_CLONE -b $YOCTO_BRANCH_NAME $QT5_LAYER_GIT_URL/$QT5_LAYER_NAME $QT5_LAYER_NAME" ' ' 'show_output'
+			do_exec "git -C $BUILD_ROOT_DIR/$QT5_LAYER_NAME checkout $QT5_BRANCH_HASH -b $IMAGE_VERSION"
+			do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+			echo -e "\033[35;1mdone ...\033[0m\n"
+		else
+			do_exec "cd $BUILD_ROOT_DIR/$QT5_LAYER_NAME"
+			CURRENT_QT_LAYER_BRANCH=`git -C $BUILD_ROOT_DIR/$QT5_LAYER_NAME rev-parse --abbrev-ref HEAD`
+			echo -e "\033[35;1mUPDATE: update $QT5_LAYER_NAME $CURRENT_QT_LAYER_BRANCH\033[0m"
+			do_exec "$GIT_STASH" 'no_exit'
+
+			if [ "$CURRENT_QT_LAYER_BRANCH" != "$YOCTO_BRANCH_NAME" ]; then
+				echo -e "\033[35;1mCHECKOUT:\033[0m\nswitch from $CURRENT_QT_LAYER_BRANCH to $YOCTO_BRANCH_NAME..."
+				do_exec "git checkout  $YOCTO_BRANCH_NAME"
+			fi
+
+			#echo -e "\033[35;1mUPDATE:\033[0m\nupdate $QT5_LAYER_NAME from (branch $YOCTO_BRANCH_NAME) $QT5_LAYER_GIT_URL ..."
+			do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+
+			if [ "$CURRENT_QT_LAYER_BRANCH" != "$YOCTO_BRANCH_NAME" ]; then
+				echo -e "\033[35;1mCHECKOUT:\033[0m\nswitch back to $CURRENT_QT_LAYER_BRANCH ..."
+				do_exec "git checkout  $CURRENT_QT_LAYER_BRANCH"
+				echo -e "\033[35;1mREBASE:\033[0m\nrebase branch $YOCTO_BRANCH_NAME into $CURRENT_QT_LAYER_BRANCH"
+				do_exec "git rebase  $YOCTO_BRANCH_NAME" ' ' 'show_output'
+			fi
+
+			do_exec "$GIT_STASH_POP" 'no_exit'
+			echo -e "\033[35;1mdone ...\033[0m\n"
+			QT5_LAYER_DO_UPDATE=0
+		fi
+	fi
+}
+
 function get_metaname () {
 	TMP_NAME=$1
 
@@ -256,6 +303,10 @@ function clone_box_layer () {
 
 			if test ! -d $BUILD_ROOT_DIR/$PYTHON2_LAYER_NAME; then
 				clone_meta_python2 $NAME
+			fi
+
+			if test ! -d $BUILD_ROOT_DIR/$QT5_LAYER_NAME; then
+				clone_meta_qt5 $NAME
 			fi
 		else
 			do_exec "cd $BUILD_ROOT_DIR/meta-$NAME"
@@ -316,7 +367,7 @@ function create_local_config () {
 	CLC_ARG1=$1
 	if [ "$CLC_ARG1" != "all" ]; then
 		BOX_BUILD_DIR=$BUILD_ROOT_DIR/$CLC_ARG1
-		
+
 		# generate default config
 		if test ! -d $BOX_BUILD_DIR/conf; then
 			echo -e "\033[37;1m\tcreate directory for $CLC_ARG1 environment ...\033[0m"
@@ -349,6 +400,11 @@ function create_local_config () {
 			if test -d $BUILD_ROOT_DIR/$META_MACHINE_LAYER/recipes-multimedia/kodi; then
 				echo 'BBLAYERS += " \
 				'$BUILD_ROOT_DIR'/'$PYTHON2_LAYER_NAME' \
+				"' >> $BOX_BUILD_DIR/conf/bblayers.conf
+			fi
+			if test -d $BUILD_ROOT_DIR/$QT5_LAYER_NAME; then
+				echo 'BBLAYERS += " \
+				'$BUILD_ROOT_DIR'/'$QT5_LAYER_NAME' \
 				"' >> $BOX_BUILD_DIR/conf/bblayers.conf
 			fi
 		fi
