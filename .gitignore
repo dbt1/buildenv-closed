@@ -11,4 +11,6 @@ dist/*
 build*
 *.orig
 *.log
+local build increment
+*.list
 
