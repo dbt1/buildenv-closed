@@ -153,6 +153,9 @@ WEATHER_DEV_KEY = ""
 #"
 #EXTRA_OECONF_append_pn-gdb = "--with-system-gdbinit=/etc/gdbinit"
 
+### experimental kodi, qtwebflix
+#DEPENDS_pn-neutrino-image += "kodi qtwebflix"
+
 
 ### package feed configuration
 #
