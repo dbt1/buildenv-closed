@@ -92,6 +92,9 @@ GUI_LAYER_NAME=meta-neutrino
 BACKUP_SUFFIX=bak
 
 YOCTO_GIT_URL=https://git.yoctoproject.org/git/poky
+# update of yocto layer is disabled on executing init script, for yocto oe it's better to use a tested tag, defined with $YOCTO_BRANCH_HASH
+YOCTO_LAYER_DO_UPDATE=0
+
 TUXBOX_LAYER_GIT_URL=https://github.com/neutrino-hd
 
 PYTHON2_LAYER_NAME=meta-python2
@@ -129,28 +132,34 @@ if test ! -d $BUILD_ROOT_DIR/.git; then
 	do_exec "cd $BUILD_ROOT_DIR"
 	do_exec "git checkout $YOCTO_BRANCH_HASH -b $IMAGE_VERSION"
 	do_exec "git tag $IMAGE_VERSION"
-	do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+	if [ $YOCTO_LAYER_DO_UPDATE != 0 ]; then
+		do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+	fi
 	echo -e "\033[36;1mdone ...\033[0m\n"
 else
-	do_exec "cd $BUILD_ROOT_DIR"
-	CURRENT_YOCTO_BRANCH=`git -C $BUILD_ROOT_DIR rev-parse --abbrev-ref HEAD`
+	if [ $YOCTO_LAYER_DO_UPDATE != 0 ]; then
+		do_exec "cd $BUILD_ROOT_DIR"
+		CURRENT_YOCTO_BRANCH=`git -C $BUILD_ROOT_DIR rev-parse --abbrev-ref HEAD`
 
-	echo -e "\033[36;1mUPDATE poky:\033[0m\nupdate $CURRENT_YOCTO_BRANCH..."
+		echo -e "\033[36;1mUPDATE poky:\033[0m\nupdate $CURRENT_YOCTO_BRANCH..."
 
-	echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch from $CURRENT_YOCTO_BRANCH to $IMAGE_VERSION..."
-	do_exec "git checkout $IMAGE_VERSION"
+		echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch from $CURRENT_YOCTO_BRANCH to $IMAGE_VERSION..."
+		do_exec "git checkout $IMAGE_VERSION"
 
-	echo -e "\033[37;1mUPDATE:\033[0m\nupdate $POKY_NAME from (branch $YOCTO_BRANCH_NAME) $YOCTO_GIT_URL ..."
-	do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+		echo -e "\033[37;1mUPDATE:\033[0m\nupdate $POKY_NAME from (branch $YOCTO_BRANCH_NAME) $YOCTO_GIT_URL ..."
+		do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
 
-	echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch back to $YOCTO_BRANCH_NAME ..."
-	do_exec "git checkout $YOCTO_BRANCH_NAME"
-	do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+		echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch back to $YOCTO_BRANCH_NAME ..."
+		do_exec "git checkout $YOCTO_BRANCH_NAME"
+		do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
 
-	echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch back to $IMAGE_VERSION ..."
-	do_exec "git checkout $IMAGE_VERSION"
+		echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch back to $IMAGE_VERSION ..."
+		do_exec "git checkout $IMAGE_VERSION"
 
-	echo -e "\033[36;1mdone ...\033[0m\n"
+		echo -e "\033[36;1mdone ...\033[0m\n"
+	else
+		echo -e "\033[36;1mupdate of yocto poky is disabled... keeping $YOCTO_BRANCH_NAME at $YOCTO_BRANCH_HASH\033[0m\n"
+	fi
 fi
 
 
@@ -171,7 +180,7 @@ else
 		do_exec "git checkout  $YOCTO_BRANCH_NAME"
 	fi
 
-	#echo -e "\033[37;1mUPDATE:\033[0m\nupdate $GUI_LAYER_NAME from (branch $YOCTO_BRANCH_NAME) $TUXBOX_LAYER_GIT_URL ..."
+	echo -e "\033[37;1mUPDATE:\033[0m\nupdate $GUI_LAYER_NAME from (branch $YOCTO_BRANCH_NAME) $TUXBOX_LAYER_GIT_URL ..."
 	do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
 
 	if [ "$CURRENT_GUI_LAYER_BRANCH" != "$YOCTO_BRANCH_NAME" ]; then
