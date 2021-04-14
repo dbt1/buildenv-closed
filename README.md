@@ -6,7 +6,10 @@ For details and download of Tuxbox-Builder VM see: https://sourceforge.net/proje
 
 ### Install required packages (Debian 9/10)
 ```bash
-apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa pylint3 xterm subversion locales-all libxml2-utils ninja-build default-jre clisp libcapstone3
+apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential \
+chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils \
+iputils-ping python3-git python3-jinja2 libegl1-mesa pylint3 xterm subversion locales-all \
+libxml2-utils ninja-build default-jre clisp libcapstone3
 ```
 Also required is sdl.
 ```bash
