@@ -121,44 +121,64 @@ elif [ "$IMAGE_VERSION" = "3.1" ]; then
 	YOCTO_BRANCH_HASH=2181825
 elif [ "$IMAGE_VERSION" = "3.2" ]; then
 	YOCTO_BRANCH_NAME=gatesgarth
-	YOCTO_BRANCH_HASH=4e4a302
-	PYTHON2_BRANCH_HASH=27d2aeb
+	YOCTO_BRANCH_HASH=d5d6286
 fi
+PYTHON2_BRANCH_HASH=27d2aeb
 
 # clone required branch from yocto
 if test ! -d $BUILD_ROOT_DIR/.git; then
-	echo -e "\033[36;1mCLONE POKY:\033[0m\nclone branch $YOCTO_BRANCH_NAME from $YOCTO_GIT_URL into $BUILD_ROOT_DIR..."
+	echo -e "\033[36;1mCLONE POKY:\033[0m clone branch $YOCTO_BRANCH_NAME from $YOCTO_GIT_URL into $BUILD_ROOT_DIR..."
 	do_exec "$GIT_CLONE -b $YOCTO_BRANCH_NAME $YOCTO_GIT_URL $POKY_NAME" ' ' 'show_output'
-	do_exec "cd $BUILD_ROOT_DIR"
-	do_exec "git checkout $YOCTO_BRANCH_HASH -b $IMAGE_VERSION"
-	do_exec "git tag $IMAGE_VERSION"
-	if [ $YOCTO_LAYER_DO_UPDATE != 0 ]; then
-		do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
-	fi
+
+	echo -e "set $POKY_NAME-repository to required yocto-release $IMAGE_VERSION at commit $YOCTO_BRANCH_HASH..."
+	do_exec "git -C $BUILD_ROOT_DIR reset --hard $YOCTO_BRANCH_HASH"
+
+	echo -e "create local branch $IMAGE_VERSION at commit $YOCTO_BRANCH_HASH..."
+	do_exec "git -C $BUILD_ROOT_DIR checkout $YOCTO_BRANCH_HASH -b $IMAGE_VERSION"
+
+	echo -e "create local tag $IMAGE_VERSION..."
+	do_exec "git -C $BUILD_ROOT_DIR tag $IMAGE_VERSION"
+
+# 	if [ $YOCTO_LAYER_DO_UPDATE != 0 ]; then
+# 		do_exec "git pull -C $BUILD_ROOT_DIR origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+# 	fi
 	echo -e "\033[36;1mdone ...\033[0m\n"
 else
 	if [ $YOCTO_LAYER_DO_UPDATE != 0 ]; then
-		do_exec "cd $BUILD_ROOT_DIR"
+
 		CURRENT_YOCTO_BRANCH=`git -C $BUILD_ROOT_DIR rev-parse --abbrev-ref HEAD`
 
 		echo -e "\033[36;1mUPDATE poky:\033[0m\nupdate $CURRENT_YOCTO_BRANCH..."
 
-		echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch from $CURRENT_YOCTO_BRANCH to $IMAGE_VERSION..."
-		do_exec "git checkout $IMAGE_VERSION"
+		echo -e "switch from $CURRENT_YOCTO_BRANCH to $IMAGE_VERSION..."
+		do_exec "git -C $BUILD_ROOT_DIR checkout $IMAGE_VERSION" ' ' 'show_output'
 
-		echo -e "\033[37;1mUPDATE:\033[0m\nupdate $POKY_NAME from (branch $YOCTO_BRANCH_NAME) $YOCTO_GIT_URL ..."
-		do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+		echo -e "update $POKY_NAME from (branch $YOCTO_BRANCH_NAME) $YOCTO_GIT_URL ..."
+		do_exec "git pull -r -C $BUILD_ROOT_DIR  origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
 
-		echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch back to $YOCTO_BRANCH_NAME ..."
-		do_exec "git checkout $YOCTO_BRANCH_NAME"
-		do_exec "$GIT_PULL origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
+		echo -e "switch back to $YOCTO_BRANCH_NAME ..."
+		do_exec "git -C $BUILD_ROOT_DIR checkout $YOCTO_BRANCH_NAME" ' ' 'show_output'
+		do_exec "git pull -r -C $BUILD_ROOT_DIR  origin $YOCTO_BRANCH_NAME" ' ' 'show_output'
 
-		echo -e "\033[37;1mCHECKOUT:\033[0m\nswitch back to $IMAGE_VERSION ..."
-		do_exec "git checkout $IMAGE_VERSION"
+		echo -e "switch back to $IMAGE_VERSION ..."
+		do_exec "git -C $BUILD_ROOT_DIR checkout $IMAGE_VERSION" ' ' 'show_output'
 
 		echo -e "\033[36;1mdone ...\033[0m\n"
 	else
-		echo -e "\033[36;1mupdate of yocto poky is disabled... keeping $YOCTO_BRANCH_NAME at $YOCTO_BRANCH_HASH\033[0m\n"
+		YOCTO_BRANCH_HASH_CURRENT=`git -C $BUILD_ROOT_DIR rev-parse --verify HEAD | awk '{print substr($0, 0,7)}'`
+		HAS_CHANGES=0
+		if [[ "$YOCTO_BRANCH_HASH_CURRENT" != "$YOCTO_BRANCH_HASH" ]]; then
+			HAS_CHANGES=1
+			LOCAL_YOCTO_BRANCH=$IMAGE_VERSION.mod.$YOCTO_BRANCH_HASH_CURRENT
+			echo -e "\033[36;1mupdate yocto: found local changes, create branch $LOCAL_YOCTO_BRANCH\033[0m\n"
+			do_exec "git -C $BUILD_ROOT_DIR checkout $YOCTO_BRANCH_HASH_CURRENT -b $LOCAL_YOCTO_BRANCH"
+			echo -e "\033[36;1mswitch to required branch $YOCTO_BRANCH_NAME at $YOCTO_BRANCH_HASH\033[0m\n"
+			do_exec "git -C $BUILD_ROOT_DIR checkout $IMAGE_VERSION"
+		fi
+		if [ $HAS_CHANGES=0 ]; then
+			echo -e "\033[36;1mkeeping $YOCTO_BRANCH_NAME at $YOCTO_BRANCH_HASH\033[0m\n"
+			do_exec "git -C $BUILD_ROOT_DIR reset --hard $YOCTO_BRANCH_HASH"
+		fi
 	fi
 fi
 

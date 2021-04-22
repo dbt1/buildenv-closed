@@ -111,7 +111,9 @@ or in the dist directory:
 ```
 
 ## Update the meta layer repositories
-Execution of init script will update the meta layers. Of corse you can update your meta-layer repositories manually.
+Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to  current
+state of remote repositories. Of corse you can update and modyify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
+Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team. Do it only if you know what you do!
 
 Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.
 
