@@ -361,6 +361,7 @@ function clone_box_layer () {
 			echo -e "\033[34;1mdone ...\033[0m\n"
 
 			clone_meta_python2 $NAME
+			clone_meta_qt5 $NAME
 		fi
 	fi
 }
