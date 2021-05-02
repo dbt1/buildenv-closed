@@ -9,18 +9,16 @@ For details and download of Tuxbox-Builder VM see: https://sourceforge.net/proje
 apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential \
 chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils \
 iputils-ping python3-git python3-jinja2 libegl1-mesa pylint3 xterm subversion locales-all \
-libxml2-utils ninja-build default-jre clisp libcapstone3
+libxml2-utils ninja-build default-jre clisp libcapstone3 libsdl2-dev
 ```
+
 Also required is sdl.
+Older buildsystem versions < (3.1) use libsdl1.2-dev
 ```bash
 apt-get install -y libsdl1.2-dev
 ```
-For newer image versions with dunfell (3.1) or later use libsdl2-dev instead libsdl1.2-dev
-```bash
-apt-get install -y libsdl2-dev
-```
 
-### Recommended additional packages:
+### Recommended additional packages for graphical support (e.g. KDE ...):
 ```bash
 apt-get install -y gitk git-gui meld
 ```
