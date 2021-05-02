@@ -248,6 +248,10 @@ SSTATE_MIRRORS = "\
 # NOTE: Some masked targets with related depends could break the build.
 # BBMASK += "/meta-neutrino/recipes-qt/qt5"
 
+### Build packages but do not install packages into root filesystem/image
+# https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#var-EXTRA_IMAGEDEPENDS
+EXTRA_IMAGEDEPENDS += " samba "
+
 # These entries replace default installed entries which are contained in ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
 # You can add more entries with variable IMAGE_INSTALL_append see below...
 #
@@ -301,5 +305,5 @@ SSTATE_MIRRORS = "\
 
 # Put additional packages that should be packaged into your image. Separated with a whitespace. or use IMAGE_INSTALL += ...
 #
-# IMAGE_INSTALL_append = " gdb-dbg glibc-dbg glibc-thread-db qtwebflix webmin rpm"
-# IMAGE_INSTALL_append = " gdb-dbg glibc-dbg glibc-thread-db webmin rpm"
+# IMAGE_INSTALL_append = " gdb-dbg glibc-dbg glibc-thread-db qtwebflix webmin"
+# IMAGE_INSTALL_append = " gdb-dbg glibc-dbg glibc-thread-db webmin"
