@@ -13,10 +13,10 @@ libxml2-utils ninja-build default-jre clisp libcapstone3 libsdl2-dev
 ```
 
 Also required is sdl.
-Older buildsystem versions < (3.1) use libsdl1.2-dev
 ```bash
-apt-get install -y libsdl1.2-dev
+apt-get install -y libsdl2-dev
 ```
+NOTE: Older buildsystem versions < 3.2 need libsdl1.2-dev
 
 ### Recommended additional packages for graphical support (e.g. KDE ...):
 ```bash
