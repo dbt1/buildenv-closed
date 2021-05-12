@@ -22,7 +22,8 @@ NOTE: Older buildsystem versions < 3.2 need libsdl1.2-dev
 ```bash
 apt-get install -y gitk git-gui meld
 ```
-NOTE: In case of no configured git, please set your global git user data:
+
+### Optional: In case of no configured git, please set your global git user data:
 ```bash
 git config --global user.email "you@example.com"
 git config --global user.user "Your Name"
