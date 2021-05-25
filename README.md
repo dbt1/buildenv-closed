@@ -36,14 +36,10 @@ https://www.yoctoproject.org/docs/3.0.3/brief-yoctoprojectqs/brief-yoctoprojectq
 ## 1. Clone init script into a directory of your choice
 ```bash
 $:~ git clone https://github.com/tuxbox-neutrino/build.git
-```
-
-## 2. Change to the generated directory
-```bash
 $:~ cd build
 ```
 
-## 3. Execute init script
+## 2. Execute init script
 This will clone all required layers and moves some config files into your build directory.
 * Parameter 1: Machine type can be  h7, hd51, hd60, hd61, osmio4k, osmio4kplus or set 'all' or keep empty '' for all machines.
 * Parameter 2: Image version can be 3.0, 3.1, 3.2 or keep empty for latest version (recommended, because of older versions are not really maintained anymore)
@@ -51,14 +47,14 @@ This will clone all required layers and moves some config files into your build 
 $:~ ./init.sh <machine> <image-version>
 ```
 
-## 4. Switch to poky directory
+## 3. Switch to poky directory
 After sccessfull executed init script you will find a subdirectory like poky-3.x .
 Now switch to this directory e.g.:
 ```bash
 $:~ cd poky-3.2
 ```
 
-## 5. Execute environment script
+## 4. Execute environment script
 Please use possible machine type which you selected (see step 3)! Here as example we use hd51.
 This creates (if not exists!) the build directory named as hd51 (default name ist build) and sets the build environment.
 ```bash
@@ -85,7 +81,7 @@ $
 ```
 NOTE: If you left the build directory you must retry step 5 for your machine type to recreate the required environment.
 
-## 6. Build image
+## 5. Build image
 After step 5 you are ready to build an image.
 ```bash
 $:~ /build/poky-3.0/<machine>$ bitbake neutrino-image
