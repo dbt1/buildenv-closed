@@ -41,10 +41,14 @@ $:~ cd build
 
 ## 2. Execute init script
 This will clone all required layers and moves some config files into your build directory.
-* Parameter 1: Machine type can be  h7, hd51, hd60, hd61, osmio4k, osmio4kplus or set 'all' or keep empty '' for all machines.
-* Parameter 2: Image version can be 3.0, 3.1, 3.2 or keep empty for latest version (recommended, because of older versions are not really maintained anymore)
+* Parameter 1 <machine>: could be h7, hd51, hd60, hd61, osmio4k, osmio4kplus or set 'all' or keep empty ' ' for all machines.
+* Parameter 2 <image-version>: could be 3.0, 3.1, 3.2 or keep empty for latest version (recommended, older versions are not really maintained anymore)
 ```bash
 $:~ ./init.sh <machine> <image-version>
+```
+sample:
+```bash
+$:~ ./init.sh hd51 3.2
 ```
 
 ## 3. Switch to poky directory
@@ -55,8 +59,8 @@ $:~ cd poky-3.2
 ```
 
 ## 4. Execute environment script
-Please use possible machine type which you selected (see step 3)! Here as example we use hd51.
-This creates (if not exists!) the build directory named as hd51 (default name ist build) and sets the build environment.
+Please use possible machine type which you selected (see step 2)! Here as example we use hd51.
+This creates (if not exists!) the build directory named as hd51 and sets the build environment and will print some lines:
 ```bash
 $:~ . ./oe-init-build-env hd51
 
@@ -79,14 +83,14 @@ Other commonly useful commands are:
 tuxbox@tuxbox-builder:~/Build/poky-3.0/hd51
 $
 ```
-NOTE: If you left the build directory you must retry step 5 for your machine type to recreate the required environment.
+NOTE: If you left the build directory you must retry step 4 for your machine type to recreate the required environment.
 
 ## 5. Build image
-After step 5 you are ready to build an image.
+Now you are ready to build an image.
 ```bash
-$:~ /build/poky-3.0/<machine>$ bitbake neutrino-image
+$:~ /build/poky-3.2/<machine>$ bitbake neutrino-image
 ```
-This may take a while. Some warn messages can be ignored and error messages during setscene tasks are no problem but errors during build and package tasks will abort the process. In this case please report or send us your solution to https://forum.tuxbox-neutrino.org/forum/viewforum.php?f=77. Help is very welcome.
+This may take a while. Some warn messages can be ignored. Error messages during setscene tasks are no problem but errors during build and package tasks will abort the process. In this case please report or send us your solution to https://forum.tuxbox-neutrino.org/forum/viewforum.php?f=77. Help is very welcome.
 
 If all done, such a message should appear:
 ```bash
