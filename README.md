@@ -40,7 +40,7 @@ $:~ cd build
 ```
 
 ## 2. Execute init script
-This will clone all required layers and moves some config files into your build directory.
+This will clone all required layers and create some config files into your build directories.
 * Parameter 1 <machine>: could be h7, hd51, hd60, hd61, osmio4k, osmio4kplus or set 'all' or keep empty ' ' for all machines.
 * Parameter 2 <image-version>: could be 3.0, 3.1, 3.2 or keep empty for latest version (recommended, older versions are not really maintained anymore)
 ```bash
@@ -60,7 +60,7 @@ $:~ cd poky-3.2
 
 ## 4. Execute environment script
 Please use possible machine type which you selected (see step 2)! Here as example we use hd51.
-This creates (if not exists!) the build directory named as hd51 and sets the build environment and will print some lines:
+This creates (if not exists!) the build directory named as hd5, sets the build environment and will print some lines:
 ```bash
 $:~ . ./oe-init-build-env hd51
 
