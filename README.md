@@ -11,11 +11,6 @@ chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianuti
 iputils-ping python3-git python3-jinja2 libegl1-mesa pylint3 xterm subversion locales-all \
 libxml2-utils ninja-build default-jre clisp libcapstone3 libsdl2-dev
 ```
-
-Also required is sdl.
-```bash
-apt-get install -y libsdl2-dev
-```
 NOTE: Older buildsystem versions < 3.2 need libsdl1.2-dev
 
 ### Recommended additional packages for graphical support (e.g. KDE ...):
