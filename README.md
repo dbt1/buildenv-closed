@@ -2,7 +2,7 @@
 
 ## Preparation
 NOTE: If you are using the Tuxbox-Builder VM (this is not mandatory) please jump to step 1. The Tuxbox-Builder VM already contains required packages.
-For details and download of Tuxbox-Builder VM see: https://sourceforge.net/projects/n4k/files/Tuxbox-Builder
+For details and download of Tuxbox-Builder VM see: [Tuxbox-Builder](https://sourceforge.net/projects/n4k/files/Tuxbox-Builder)
 
 ### Install required packages (Debian 9/10)
 ```bash
@@ -24,9 +24,7 @@ git config --global user.email "you@example.com"
 git config --global user.user "Your Name"
 ```
 
-For usage with other distributions see:
-
-https://www.yoctoproject.org/docs/3.0.3/brief-yoctoprojectqs/brief-yoctoprojectqs.html
+For usage with other distributions see: [Yocto Project Quick Build](https://www.yoctoproject.org/docs/latest/brief-yoctoprojectqs/brief-yoctoprojectqs.html)
 
 ## 1. Clone init script into a directory of your choice
 ```bash
