@@ -40,20 +40,15 @@ This will clone all required layers and create some config files into your build
 * Parameter 2 <image-version>: could be 3.0, 3.1, 3.2 or keep empty for latest version (recommended, older versions are not really maintained anymore)
 ```bash
 $:~ ./init.sh <machine> <image-version>
+$:~ cd poky-<image-version>
 ```
-sample:
+example:
 ```bash
 $:~ ./init.sh hd51 3.2
-```
-
-## 3. Switch to poky directory
-After sccessfull executed init script you will find a subdirectory like poky-3.x .
-Now switch to this directory e.g.:
-```bash
 $:~ cd poky-3.2
 ```
 
-## 4. Execute environment script
+## 3. Execute environment script
 Please use possible machine type which you selected (see step 2)! Here as example we use hd51.
 This creates (if not exists!) the build directory named as hd5, sets the build environment and will print some lines:
 ```bash
@@ -80,7 +75,7 @@ $
 ```
 NOTE: If you left the build directory you must retry step 4 for your machine type to recreate the required environment.
 
-## 5. Build image
+## 4. Build image
 Now you are ready to build an image.
 ```bash
 $:~ /build/poky-3.2/<machine>$ bitbake neutrino-image
@@ -104,15 +99,18 @@ or in the dist directory:
 ~/build/dist/<image-version/<machine>/
 ```
 
-## Update the meta layer repositories
-Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to  current
+## 5. Update the meta layer repositories
+Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to current
 state of remote repositories. Of corse you can update and modyify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
 Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team. Do it only if you know what you do!
+
+An explicit update for any sources (e.g. neutrino) is not required, because this will be done automatically on evrery called target with bitbake. This will also update required depndencies.
+Exception: You have moved any target source into the workspace tree. In this case you have full control to source code you want to modify.
 
 Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.
 
 
-## Reset configuration
+## Reset configuration if required
 If you want to reset your configs, please rename (delete is not recommended) the conf directory and execute the init script again.
 
 
