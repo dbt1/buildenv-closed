@@ -26,6 +26,8 @@ git config --global user.user "Your Name"
 
 For usage with other distributions see: [Yocto Project Quick Build](https://www.yoctoproject.org/docs/latest/brief-yoctoprojectqs/brief-yoctoprojectqs.html)
 
+### let's start:
+
 ## 1. Clone init script into a directory of your choice
 ```bash
 $:~ git clone https://github.com/tuxbox-neutrino/build.git
@@ -97,7 +99,7 @@ or in the dist directory:
 ~/build/dist/<image-version/<machine>/
 ```
 
-## 5. Update the meta layer repositories
+## Update the meta layer repositories
 Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to current
 state of remote repositories. Of corse you can update and modyify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
 Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team. Do it only if you know what you do!
