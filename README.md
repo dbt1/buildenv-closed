@@ -99,25 +99,29 @@ or in the dist directory:
 ~/build/dist/<image-version/<machine>/
 ```
 
-## Update the meta layer repositories
+## Updating
+	
+### Update meta layer repositories
 Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to current
 state of remote repositories. Of corse you can update and modiify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
-**Please do not modify the Yocto-sources!** This is not recommended by the Yocto-Team, but you can use [.bbappend](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-bbappend-files) files to complete, expand or override meta core Yocto recipes.
 
+**Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.**
+
+### Update target sources
 An explicit update for any sources (e.g. neutrino) is not required. This will be done automatically on evrery called target with bitbake. This will also update required dependencies.
 Exception: You have moved any target source into the workspace tree. In this case you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow). 
 
-Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.
-
 
 ## Reset configuration if required
-If you want to reset your configs, please rename (delete is not recommended) the conf directory and execute the init script again.
+If you want to reset your configs, please rename (delete is not recommended) the conf directory ($HOME/build/poky-X.X/<machine>/conf) and execute the init script again.
 
 
 ## Customize if required
 It's recommended to build for first time without any changes on config files to get an impression how the build process is working and see the results.
 The possibilities for adjustments are very extensive and not really manageable for beginners. However, the Yoctoproject is very 
 extensively documented and provides the best source of information.
+	
+**Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team, but you can use [.bbappend](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-bbappend-files) files to complete, expand or override meta core Yocto recipes.**
 
 The generated local.conf contains only a few lines but contains a line which is linking a common config file and is valid for all images and supported machine types. The origin cloned sample config file ("local.conf.common.inc.sample") should be untouched. This avoids possible conflicts during updating the init script from git repo. After executed init script (step 2), the config sample file was renamed from "local.conf.common.inc.sample" to "local.conf.common.inc" and this file you can feed with your own options which have effect for all images you want to build.
 Alternatively you can modify the default "$HOME/Build/poky-X.X/<machine>/conf/local.conf" with your own requirements or include your own config file. After updated init script, some new or changed options could be added or removed. This case you should consider for your own configuration.
