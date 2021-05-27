@@ -49,8 +49,8 @@ $:~ cd poky-3.2
 ```
 
 ## 3. Execute environment script
-Please use possible machine type which you selected (see step 2)! Here as example we use hd51.
-This creates (if not exists!) the build directory named as hd5, sets the build environment and will print some lines:
+Please use possible machine type which you selected (see [step 2](#2-execute-init-script))! Here as example we use hd51.
+This creates (if not exists!) the build directory named as hd51, sets the build environment and will print some lines:
 ```bash
 $:~ . ./oe-init-build-env hd51
 
@@ -73,7 +73,7 @@ Other commonly useful commands are:
 tuxbox@tuxbox-builder:~/Build/poky-3.0/hd51
 $
 ```
-NOTE: If you left the build directory you must retry step 4 for your machine type to recreate the required environment.
+**NOTE:** If you left the current shell you must retry [step 3](#3-execute-environment-script) for your machine type to recreate the required environment.
 
 ## 4. Build image
 Now you are ready to build an image.
