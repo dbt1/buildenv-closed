@@ -1,7 +1,7 @@
 # Quick start image build #
 
 ## Preparation
-NOTE: If you are using the Tuxbox-Builder VM (this is not mandatory) please jump to step 1. The Tuxbox-Builder VM already contains required packages.
+NOTE: If you are using the Tuxbox-Builder VM (this is not mandatory) please jump to [step 1](#1-clone-init-script-into-a-directory-of-your-choice). The Tuxbox-Builder VM already contains required packages.
 For details and download of Tuxbox-Builder VM see: [Tuxbox-Builder](https://sourceforge.net/projects/n4k/files/Tuxbox-Builder)
 
 ### Install required packages (Debian 9/10)
