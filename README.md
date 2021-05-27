@@ -80,7 +80,7 @@ Now you are ready to build an image.
 ```bash
 $:~ /build/poky-3.2/<machine>$ bitbake neutrino-image
 ```
-This may take a while. Some warn messages can be ignored. Error messages during setscene tasks are no problem but errors during build and package tasks will abort the process. In this case please report or send us your solution to https://forum.tuxbox-neutrino.org/forum/viewforum.php?f=77. Help is very welcome.
+This may take a while. Some warn messages can be ignored. Error messages during setscene tasks are no problem but errors during build and package tasks will abort the process. In this case please report or send us your solution to [Tuxbox-Forum](https://forum.tuxbox-neutrino.org/forum/viewforum.php?f=77). Help is very welcome.
 
 If all done, such a message should appear:
 ```bash
@@ -105,7 +105,7 @@ state of remote repositories. Of corse you can update and modyify your local met
 Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team. Do it only if you know what you do!
 
 An explicit update for any sources (e.g. neutrino) is not required, because this will be done automatically on evrery called target with bitbake. This will also update required depndencies.
-Exception: You have moved any target source into the workspace tree. In this case you have full control to source code you want to modify.
+Exception: You have moved any target source into the workspace tree. In this case you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow). 
 
 Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.
 
