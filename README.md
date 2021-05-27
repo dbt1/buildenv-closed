@@ -101,10 +101,10 @@ or in the dist directory:
 
 ## Update the meta layer repositories
 Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to current
-state of remote repositories. Of corse you can update and modyify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
-Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team. Do it only if you know what you do!
+state of remote repositories. Of corse you can update and modiify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
+**Please do not modify the Yocto-sources!** This is not recommended by the Yocto-Team, but you can use [.bbappend](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-bbappend-files) files to complete, expand or override meta core Yocto recipes.
 
-An explicit update for any sources (e.g. neutrino) is not required, because this will be done automatically on evrery called target with bitbake. This will also update required depndencies.
+An explicit update for any sources (e.g. neutrino) is not required. This will be done automatically on evrery called target with bitbake. This will also update required dependencies.
 Exception: You have moved any target source into the workspace tree. In this case you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow). 
 
 Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.
