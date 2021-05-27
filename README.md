@@ -102,9 +102,7 @@ or in the dist directory:
 ## Updating
 
 ### Update target sources
-An explicit update for any sources (e.g. neutrino) is not required. This will be done automatically on evrery called target with bitbake. This will also update required dependencies.
-
-Exception: You have moved any target source into the workspace tree. In this case you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow). 
+An explicit update for any sources (e.g. neutrino) is not required. This will be done automatically on evrery called target with bitbake. This will also update required dependencies. See also "[Working on target sources](#working-on-target-sources)
 
 ### Update meta layer repositories
 Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to current
@@ -112,6 +110,9 @@ state of remote repositories. Of corse you can update and modiify your local met
 
 **Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.**
 
+## Working on target sources
+In this case you shuold transfer the desiered target source into the workspace repository.
+if You have moved any target source into the workspace tree you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow) and especially [devtool modify](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#sdk-devtool-use-devtool-modify-to-modify-the-source-of-an-existing-component). 
 
 ## Reset configuration if required
 If you want to reset your configs, please rename (delete is not recommended) the conf directory ($HOME/build/poky-X.X/<machine>/conf) and execute the init script again.
