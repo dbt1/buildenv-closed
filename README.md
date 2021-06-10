@@ -37,7 +37,7 @@ $:~ cd build
 ## 2. Execute init script
 This will clone all required layers and create some config files into your build directories.
 * Parameter 1 <machine>: could be h7, hd51, hd60, hd61, osmio4k, osmio4kplus or set 'all' or keep empty ' ' for all machines.
-* Parameter 2 <image-version>: could be 3.0, 3.1, 3.2 or keep empty for latest version (recommended, older versions are not really maintained anymore)
+* Parameter 2 <image-version>: could be 3.0, 3.1, 3.2 (default) or keep empty for default version (recommended, older versions are not really maintained anymore)
 ```bash
 $:~ ./init.sh <machine> <image-version>
 $:~ cd poky-<image-version>
