@@ -117,7 +117,14 @@ if You have moved any target source into the workspace tree you have full contro
 ## Reset configuration if required
 If you want to reset your configs, please rename (delete is not recommended) the conf directory ($HOME/build/poky-X.X/<machine>/conf) and execute the init script again.
 
-
+## Force complete rebuild
+If you want to force rebuild you can delete (or rename) the tmp directory:	
+```
+~/build/poky-X.X/<machine>/tmp
+```
+That causes the complete reassembling of the image. If you didn't delete the sstate-cache directory, your image should be ready in a very fast time. Therefore, it is recommended to keep the sstate-cache directory. 
+In rare cases it should be necessary to delete this directory as well. Please note, however, in this case the build will take much more time.
+	
 ## Customize if required
 It's recommended to build for first time without any changes on config files to get an impression how the build process is working and see the results.
 The possibilities for adjustments are very extensive and not really manageable for beginners. However, the Yoctoproject is very 
