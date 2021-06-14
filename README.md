@@ -49,7 +49,7 @@ $:~ cd poky-3.2
 ```
 
 ## 3. Execute environment script
-Please use possible machine type which you selected (see [step 2](#2-execute-init-script))! Here as example we use hd51.
+Please use the possible machine type which you selected on [step 2](#2-execute-init-script)! Here as example we use hd51.
 This creates (if not exists!) the build directory named as hd51, sets the build environment and will print some lines:
 ```bash
 $:~ . ./oe-init-build-env hd51
