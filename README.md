@@ -135,14 +135,14 @@ extensively documented and provides the best source of information.
 The generated local.conf contains only a few lines but contains a line which is pointing to a common config file and is valid for all images and supported machine types. The origin cloned sample config file ("local.conf.common.inc.sample") should be untouched. This avoids possible conflicts during updating the init script from git repo. After executed init script (step 2), the config sample file was renamed from "local.conf.common.inc.sample" to "local.conf.common.inc" and this file you can feed with your own options which have effect for all images you want to build.
 Alternatively you can modify the default "$HOME/Build/poky-X.X/<machine>/conf/local.conf" with your own requirements or include your own config file. After updated init script, some new or changed options could be added or removed. This case you should consider for your own configuration.
 
+### Global configuration files
 For local configuration these config files within your build directory are required:
 ```
-../build/poky-X.X/<machine>/conf/bblayers.conf
-../build/poky-X.X/<machine>/conf/local.conf
+$HOME/build/poky-X.X/<machine>/conf/bblayers.conf
 ```
-
-This is the minimal required setup for bblayers.conf. 
-NOTE! machine name is not a part of layer name (e.g. hd51) 
+Default generated configuration for bblayers.conf:
+	
+**NOTE:** ```<metaname>``` must be replaced with your machine type (e.g. hd51) 
 
 ```bitbake
 # POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
@@ -159,8 +159,24 @@ BBLAYERS ?= " \
 	${HOME}/build/poky-X.X/meta-neutrino \
 	${HOME}/build/poky-X.X/poky/meta-<metaname> \
 "
-```  
-Further informations about yocto buildsystem you can find here:
+# the following entries are experimental and are required to build kodi and some qt related stuff e.g. qtwebengine ...
+
+BBLAYERS += " \
+		/home/tg/builder/poky-3.2/meta-python2 \
+"
+BBLAYERS += " \
+		/home/tg/builder/poky-3.2/meta-qt5 \
+"
+``` 
+	
+The general configuration you will find here, mostly entries are described inside these files:
+```
+$HOME/build/poky-X.X/<machine>/conf/local.conf
+$HOME/build/local.conf.common.inc
+```
+
+## More informations
+Further informations about yocto buildsystem you will find here:
 
 * https://www.yoctoproject.org/docs/latest/brief-yoctoprojectqs/brief-yoctoprojectqs.html
 * https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html
