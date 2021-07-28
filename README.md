@@ -102,27 +102,27 @@ or in the dist directory:
 ## Updating
 
 ### Update target sources
-An explicit update for any sources (e.g. neutrino) is not required. This will be done automatically on evrery called target with bitbake. This will also update required dependencies. See also "[Working on target sources](#working-on-target-sources)"!
+An explicit update for any sources (e.g. neutrino) is not required. This will be done automatically on every called target with bitbake. This will also update required dependencies. If you moved some target sources into the workspace ($HOME/builder/poky-X.X/<machine>/workspace), you must do it yourself. See also "[Working on target sources](#working-on-target-sources)"!
 
 ### Update meta layer repositories
 Execution of init script will update the yocto poky-x.x repository to the required yocto release and will updating the included local meta layers to current
 state of remote repositories. Of corse you can update and modiify your local meta-layer for meta-neutrino and machine layers repositories manually. The update routines will stash uncommitted changes or will rebase your local commits to new remote changes, but conflicts are possible. In this case you must solve manually.
 
-**Note: Your config files will be untouched. New or adapted config options are not considered. Please check your configuration if required.**
+**Note: Your config files will be untouched. New or modified config options are not considered. Please check your configuration if required.**
 
 ## Working on target sources
-In this case you should transfer the desiered target source into the workspace repository.
-if You have moved any target source into the workspace tree you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow) and especially [devtool modify](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#sdk-devtool-use-devtool-modify-to-modify-the-source-of-an-existing-component). 
+In this case you should transfer the desiered target source into the workspace repository ($HOME/builder/poky-X.X/<machine>/workspace).
+If You have moved any target source into the workspace tree you have full control to source code you want to modify. See also [devtool](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-devtool-in-your-sdk-workflow) and especially [devtool modify](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#sdk-devtool-use-devtool-modify-to-modify-the-source-of-an-existing-component). 
 
 ## Reset configuration if required
 If you want to reset your configs, please rename (delete is not recommended) the conf directory ($HOME/build/poky-X.X/<machine>/conf) and execute the init script again.
 
 ## Force complete rebuild
-If you want to force rebuild you can delete (or rename) the tmp directory:	
+If you want to force rebuild you can delete (or rename) the tmp directory ($HOME/build/poky-X.X/<machine>/tmp):	
 ```
 ~/build/poky-X.X/<machine>/tmp
 ```
-That causes the complete reassembling of the image. If you didn't delete the sstate-cache directory, your image should be ready in a very fast time. Therefore, it is recommended to keep the sstate-cache directory. 
+That causes the complete reassembling of the image. If you didn't delete the sstate-cache directory ($HOME/build/poky-X.X/<machine>/sstate-cache), your image should be ready in a very fast time. Therefore, it is recommended to keep the sstate-cache directory. 
 In rare cases it should be necessary to delete this directory as well. Please note, however, in this case the build will take much more time.
 	
 ## Customize if required
@@ -132,10 +132,10 @@ extensively documented and provides the best source of information.
 	
 **Please do not modify the Yocto-sources! This is not recommended by the Yocto-Team, but you can use [.bbappend](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#using-bbappend-files) files to complete, expand or override meta core Yocto recipes.**
 
-The generated local.conf contains only a few lines but contains a line which is pointing to a common config file and is valid for all images and supported machine types. The origin cloned sample config file ("local.conf.common.inc.sample") should be untouched. This avoids possible conflicts during updating the init script from git repo. After executed init script (step 2), the config sample file was renamed from "local.conf.common.inc.sample" to "local.conf.common.inc" and this file you can feed with your own options which have effect for all images you want to build.
+The generated local.conf contains only a few lines but contains a line which is pointing to a common config file and is valid for all images and supported machine types to keep an unified image structure. The origin cloned sample config file ("local.conf.common.inc.sample") should be untouched. This avoids possible conflicts during updating the init script from git repo. After executed init script (step 2), the config sample file was renamed from "local.conf.common.inc.sample" to "local.conf.common.inc" and this file you can feed with your own options which have effect for all images you want to build.
 Alternatively you can modify the default "$HOME/Build/poky-X.X/<machine>/conf/local.conf" with your own requirements or include your own config file. After updated init script, some new or changed options could be added or removed. This case you should consider for your own configuration.
 
-### Global configuration files
+### Overview of global configuration files
 For local configuration these config files within your build directory are required:
 ```
 $HOME/build/poky-X.X/<machine>/conf/bblayers.conf
