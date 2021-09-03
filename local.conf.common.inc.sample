@@ -115,11 +115,6 @@ INHIBIT_EXTENDED_IMAGE_VERSION = "1"
 ROOTPW = ""
 
 
-### Choose which plugins should be installed
-#
-PLUGIN_INSTALL += "msgbox tuxcom shellexec input tuxwetter"
-
-
 ### Add Image Maintainer here
 #
 CREATOR = "${USER}"
@@ -242,30 +237,88 @@ SSTATE_MIRRORS = "\
      file://.* https://sstate.tuxbox-upload.de/all/sstate-cache/PATH;downloadfilename=PATH \n \
 "
 
-
 ### masked recipes
 # This will ignore recipes to build.
 # NOTE: Some masked targets with related depends could break the build.
 # BBMASK += "/meta-neutrino/recipes-qt/qt5"
 
-### Build packages but do not install packages into root filesystem/image
-# https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#var-EXTRA_IMAGEDEPENDS
-EXTRA_IMAGEDEPENDS += " samba "
 
-# These entries replace default installed entries which are contained in ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
-# You can add more entries with variable IMAGE_INSTALL_append see below...
+### Build packages but do not install packages into root filesystem/image, user can install such packages later
+### https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#var-EXTRA_IMAGEDEPENDS
+# EXTRA_IMAGEDEPENDS = " \
+# 	samba \
+# 	webmin \
+# 	\
+# 	browser \
+# 	favorites-to-bin \
+# 	myspass \
+# 	netzkino  \
+# 	rcu-switcher \
+# 	stb-log \
+# 	stb-move \
+# 	stb-shell \
+# 	to-web-tv-xml \
+# 	webradio \
+# 	webtv \
+# "
+
+### Choose which plugins should be installed, Available plugins you can see inside the neutrino meta layer recipes, to find here
+### ~/builder/poky-3.2/meta-neutrino/recipes-neutrino/neutrino-plugins
 #
+# PLUGIN_INSTALL += " \
+# 	getrc \
+# 	input \
+# 	logomask \
+# 	msgbox \
+# 	shellexec \
+# 	tuxcom \
+# 	tuxwetter \
+# "
+# # PLUGIN_LUA_INSTALL += " \
+# 	ard-mediathek \
+# 	heizoelpreise \
+# 	logoupdater \
+# 	mediathek \
+# 	mtv \
+# 	rss \
+# 	settingsupdater \
+# 	stb-backup \
+# 	stb-flash \
+# 	stb-flash-local \
+# 	stb-restore \
+# 	stb-startup \
+# 	browser \
+# 	favorites-to-bin \
+# 	heizoelpreise \
+# 	myspass \
+# 	netzkino  \
+# 	rcu-switcher \
+# 	stb-log \
+# 	stb-move \
+# 	stb-shell \
+# 	to-web-tv-xml \
+# 	webradio \
+# 	webtv \
+# # "
+
+### These entries replace default installed entries which are contained in ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
+### You can add more entries with variable IMAGE_INSTALL_append see below...
+### Be careful do not remove vital parts and do not add anything that could burst the image! 
+### Alternatively, use the EXTRA_IMAGEDEPENDS variable to create packages without image installation.
 # IMAGE_INSTALL += " \
 # 	vsftpd \
 # "
 # IMAGE_INSTALL = " \
+# 	${PLUGIN_INSTALL} \
 # 	autofs \
+# 	bc \
 # 	ca-certificates \
 # 	curl \
 # 	dosfstools \
 # 	e2fsprogs \
 # 	e2fsprogs-resize2fs \
 # 	findutils \
+# 	flash-script \
 # 	gptfdisk \
 # 	hdparm \
 # 	ifupdown \
@@ -294,11 +347,8 @@ EXTRA_IMAGEDEPENDS += " samba "
 # 	util-linux-mount \
 # 	util-linux-swaponoff \
 # 	util-linux-umount \
-# 	virtual/screengrabber \
 # 	virtual/neutrino \
-# 	neutrino-plugins \
-# 	neutrino-lua-plugins \
-# 	neutrino-plugin-mediathek \
+# 	virtual/screengrabber \
 # 	xupnpd \
 # 	zip \
 # "
