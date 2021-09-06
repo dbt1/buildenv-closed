@@ -121,7 +121,7 @@ elif [ "$IMAGE_VERSION" = "3.1" ]; then
 	YOCTO_BRANCH_HASH=2181825
 elif [ "$IMAGE_VERSION" = "3.2" ]; then
 	YOCTO_BRANCH_NAME=gatesgarth
-	YOCTO_BRANCH_HASH=60c8482
+	YOCTO_BRANCH_HASH=9c1e947
 fi
 PYTHON2_BRANCH_HASH=27d2aeb
 
@@ -165,13 +165,13 @@ else
 
 		echo -e "\033[36;1mdone ...\033[0m\n"
 	else
-		YOCTO_BRANCH_HASH_CURRENT=`git -C $BUILD_ROOT_DIR rev-parse --verify HEAD | awk '{print substr($0, 0,7)}'`
 		HAS_CHANGES=0
+		YOCTO_BRANCH_HASH_CURRENT=`git -C $BUILD_ROOT_DIR rev-parse --verify HEAD | awk '{print substr($0, 0,7)}'`
 		if [[ "$YOCTO_BRANCH_HASH_CURRENT" != "$YOCTO_BRANCH_HASH" ]]; then
 			HAS_CHANGES=1
-			LOCAL_YOCTO_BRANCH=$IMAGE_VERSION.mod.$YOCTO_BRANCH_HASH_CURRENT
+			LOCAL_YOCTO_BRANCH=$IMAGE_VERSION.mod.$YOCTO_BRANCH_HASH
 			echo -e "\033[36;1mupdate yocto: found local changes, create branch $LOCAL_YOCTO_BRANCH\033[0m\n"
-			do_exec "git -C $BUILD_ROOT_DIR checkout $YOCTO_BRANCH_HASH_CURRENT -b $LOCAL_YOCTO_BRANCH"
+			do_exec "git -C $BUILD_ROOT_DIR checkout $YOCTO_BRANCH_HASH -b $LOCAL_YOCTO_BRANCH"
 			echo -e "\033[36;1mswitch to required branch $YOCTO_BRANCH_NAME at $YOCTO_BRANCH_HASH\033[0m\n"
 			do_exec "git -C $BUILD_ROOT_DIR checkout $IMAGE_VERSION"
 		fi
