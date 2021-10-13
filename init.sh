@@ -451,6 +451,7 @@ function create_dist_tree () {
 		DIST_LINK_IMAGES=$DIST_BASEDIR/$PAR1/images
 		DIST_LINK_IPK=$DIST_BASEDIR/$PAR1/ipk
 		DIST_LINK_LICENSE=$DIST_BASEDIR/$PAR1/licenses
+		DIST_LINK_SOURCE_DOC=$DIST_BASEDIR/$PAR1/source-doc
 
 		if test ! -d "$DIST_LINK"; then
 			echo -e "\n\033[37;1mcreate directory:\033[0m   $DIST_LINK"
@@ -461,6 +462,7 @@ function create_dist_tree () {
 		DEPLOY_DIR_IMAGES=$DEPLOY_DIR/images/$PAR1
 		DEPLOY_DIR_IPK=$DEPLOY_DIR/ipk
 		DEPLOY_DIR_LICENSE=$DEPLOY_DIR/licenses
+		DEPLOY_DIR_SOURCE_DOC=$DEPLOY_DIR/source-doc
 
 		if test ! -L "$DIST_LINK_IMAGES"; then
 			echo -e "\033[37;1mcreate symlink:\033[0m     $DIST_LINK_IMAGES"
@@ -475,6 +477,11 @@ function create_dist_tree () {
 		if test ! -L "$DIST_LINK_LICENSE"; then
 			echo -e "\033[37;1mcreate symlink:\033[0m     $DIST_LINK_LICENSE"
 			do_exec "ln -sf $DEPLOY_DIR_LICENSE $DIST_LINK_LICENSE"
+		fi
+
+		if test ! -L "$DIST_LINK_SOURCE_DOC"; then
+			echo -e "\033[37;1mcreate symlink:\033[0m     $DIST_LINK_SOURCE_DOC"
+			do_exec "ln -sf $DEPLOY_DIR_SOURCE_DOC $DIST_LINK_SOURCE_DOC"
 		fi
 	fi
 }
