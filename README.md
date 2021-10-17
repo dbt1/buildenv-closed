@@ -13,9 +13,9 @@ libxml2-utils ninja-build default-jre clisp libcapstone3 libsdl2-dev doxygen
 ```
 NOTE: Older buildsystem versions < 3.2 need libsdl1.2-dev
 
-### Recommended additional packages for graphical support (e.g. KDE ...):
+### Recommended additional packages for graphical support (e.g. KDE ...) and analyzing (e.g. with Kdevelop):
 ```bash
-apt-get install -y gitk git-gui meld
+apt-get install -y gitk git-gui meld cppcheck clazy kdevelop
 ```
 
 ### Optional: In case of no configured git, please set your global git user data:
