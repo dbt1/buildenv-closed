@@ -4,10 +4,10 @@
 
 BASEPATH=`pwd`
 FILES_DIR=$BASEPATH/files
-MACHINES="h7 hd51 hd60 hd61 osmio4k osmio4kplus"
+MACHINES="bre2ze4k h7 hd51 hd60 hd61 osmio4k osmio4kplus"
 HINT_SYNTAX='Usage '$0' <machine> <image-version>'
 HINT_MACHINES="<$MACHINES all>"
-HINT_IMAGE_VERSIONS='<3.2> <3.1> <3.0>'
+HINT_IMAGE_VERSIONS='<3.2>'
  
 LOG_PATH=$BASEPATH/log
 mkdir -p $LOG_PATH
@@ -30,11 +30,8 @@ else
 	MACHINE=$1
 fi
 
-if [ "$2" = "" ]; then
-	IMAGE_VERSION="3.2"
-else
-	IMAGE_VERSION=$2
-fi
+# only current version
+IMAGE_VERSION="3.2"
 
 # check for empty machine
 if [ -z "$MACHINE" ]; then
@@ -43,13 +40,13 @@ if [ -z "$MACHINE" ]; then
 fi
 
 # check for valid machine
-if [ "$MACHINE" != "hd51" ] && [ "$MACHINE" != "h7" ] && [ "$MACHINE" != "hd60" ] && [ "$MACHINE" != "hd61" ] && [ "$MACHINE" != "osmio4k" ] && [ "$MACHINE" != "osmio4kplus" ] && [ "$MACHINE" != "all" ]; then
+if [ "$MACHINE" != "bre2ze4k" ] &&[ "$MACHINE" != "hd51" ] && [ "$MACHINE" != "h7" ] && [ "$MACHINE" != "hd60" ] && [ "$MACHINE" != "hd61" ] && [ "$MACHINE" != "osmio4k" ] && [ "$MACHINE" != "osmio4kplus" ] && [ "$MACHINE" != "all" ]; then
     echo -e "\033[31;1mERROR:\tInvalid machine defined. $HINT_SYNTAX. Possible machines are $HINT_MACHINES\033[0m"
     exit 1
 fi
 
 # check for image versions
-if [ "$IMAGE_VERSION" != "3.2" ] && [ "$IMAGE_VERSION" != "3.1" ] && [ "$IMAGE_VERSION" != "3.0" ]; then
+if [ "$IMAGE_VERSION" != "3.2" ]; then
     echo -e "\033[31;1mERROR:\tInvalid image version defined. $HINT_SYNTAX. Possible image versions are $HINT_IMAGE_VERSIONS, keep empty for current version\033[0m"
     exit 1    
 fi
@@ -112,17 +109,9 @@ GIT_STASH_POP='git stash pop'
 
 
 # set required branch
-YOCTO_BRANCH_NAME=""
-if [ "$IMAGE_VERSION" = "3.0" ]; then
-	YOCTO_BRANCH_NAME=zeus
-	YOCTO_BRANCH_HASH=d88d62c
-elif [ "$IMAGE_VERSION" = "3.1" ]; then
-	YOCTO_BRANCH_NAME=dunfell
-	YOCTO_BRANCH_HASH=2181825
-elif [ "$IMAGE_VERSION" = "3.2" ]; then
-	YOCTO_BRANCH_NAME=gatesgarth
-	YOCTO_BRANCH_HASH=bc71ec0
-fi
+YOCTO_BRANCH_NAME=gatesgarth
+YOCTO_BRANCH_HASH=bc71ec0
+
 PYTHON2_BRANCH_HASH=27d2aeb
 
 # clone required branch from yocto
@@ -263,7 +252,7 @@ function clone_meta_python2 () {
 function clone_meta_qt5 () {
 	META_MACHINE_LAYER=meta-$1
 
-	if [ $QT5_LAYER_DO_UPDATE == "1" ] && [ "$IMAGE_VERSION" != "3.0" ] && [ "$IMAGE_VERSION" != "3.1" ] && test -d $BUILD_ROOT_DIR/$META_MACHINE_LAYER/recipes-multimedia/kodi; then
+	if [ $QT5_LAYER_DO_UPDATE == "1" ] && test -d $BUILD_ROOT_DIR/$META_MACHINE_LAYER/recipes-multimedia/kodi; then
 
 		$CURRENT_QT_LAYER_BRANCH
 
@@ -306,13 +295,15 @@ function get_metaname () {
 	TMP_NAME=$1
 
 	if [ "$TMP_NAME" == "hd51" ]; then
-		META_NAME="hd51"
+		META_NAME="gfutures"
 	elif [ "$TMP_NAME" == "h7" ]; then
-		META_NAME="zgemma"
+		META_NAME="gfutures"
 	elif [ "$TMP_NAME" == "hd60" ] || [ "$TMP_NAME" == "hd61" ]; then
 		META_NAME="hisilicon"
 	elif [ "$TMP_NAME" == "osmio4k" ] || [ "$TMP_NAME" == "osmio4kplus" ]; then
 		META_NAME="edision"
+	elif [ "$TMP_NAME" == "bre2ze4k" ]; then
+		META_NAME="gfutures"
 	else
 		META_NAME=$TMP_NAME
 	fi
@@ -325,9 +316,15 @@ function clone_box_layer () {
 	
 	if [ "$NAME" != "all" ]; then
 		if test ! -d $BUILD_ROOT_DIR/meta-$NAME/.git; then
-			echo -e "\033[34;1mCLONE: clone meta-$NAME (branch $YOCTO_BRANCH_NAME) from $TUXBOX_LAYER_GIT_URL ...\033[0m"
 			do_exec "cd $BUILD_ROOT_DIR"
-			do_exec "$GIT_CLONE -b $YOCTO_BRANCH_NAME $TUXBOX_LAYER_GIT_URL/meta-$NAME.git" ' ' 'show_output'
+
+			if [ "$NAME" != "gfutures" ]; then
+				echo -e "\033[34;1mCLONE: clone meta-$NAME (branch $YOCTO_BRANCH_NAME) from $TUXBOX_LAYER_GIT_URL ...\033[0m"
+				do_exec "$GIT_CLONE -b $YOCTO_BRANCH_NAME $TUXBOX_LAYER_GIT_URL/meta-$NAME.git" ' ' 'show_output'
+			else
+				echo -e "\033[34;1mCLONE: clone meta-$NAME (branch $YOCTO_BRANCH_NAME) from https://github.com/dbt1 ...\033[0m"
+				do_exec "$GIT_CLONE -b $YOCTO_BRANCH_NAME https://github.com/dbt1/meta-$NAME.git" ' ' 'show_output'
+			fi
 			echo -e "\033[34;1mdone ...\033[0m\n"
 
 			if test ! -d $BUILD_ROOT_DIR/$PYTHON2_LAYER_NAME; then
