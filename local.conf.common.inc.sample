@@ -1,10 +1,10 @@
 ### Host variables
 #
 # Determine how many tasks bitbake should run in parallel:
-BB_NUMBER_THREADS ?= "8"
+#BB_NUMBER_THREADS ?= "8"
 #
 # Determine how many processes make should run in parallel when running compile tasks:
-PARALLEL_MAKE ?= "-j 4"
+#PARALLEL_MAKE ?= "-j 8"
 # Note: For your decision you can get information about core and threads at your machine with this command:
 #  ~ $  lscpu | grep -E '^Thread|^CPU\('
 
@@ -217,6 +217,13 @@ BB_GENERATE_MIRROR_TARBALLS = "1"
 
 PREMIRRORS_prepend = "\
     file://.*/.*     file://${HOME}/Downloads/* \n"
+
+SSTATE_DIR = "${YOCTO_BASEDIR}/sstate-cache"
+
+### Ensure cleanup of local package workspace after build of package
+#
+#INHERIT += "rm_work"
+RM_WORK_EXCLUDE += "neutrino-image base-files"
 
 ### Tip: use sstate mirrors
 #
