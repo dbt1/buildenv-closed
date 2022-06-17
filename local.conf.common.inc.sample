@@ -48,10 +48,18 @@ YOCTO_BASEDIR = "${COREBASE}"
 DL_DIR ?= "${COREBASE}/yocto-downloads"
 #DL_DIR = "${HOME}/Archive"
 
-### Directory for the shared state cache. By default, the SSTATE_DIR variable points to sstate-cache within the build directory as ${TOPDIR}/sstate-cache.
+### Directory for the shared state cache. By default, the SSTATE_DIR variable points to sstate-cache within the build directory as ${TOPDIR}/sstate-cache,
+# but it's a good idea to place it into your user directory, so that this folder is always available in case the build folder should be deleted anyway.
 #
-SSTATE_DIR = "${TOPDIR}/sstate-cache"
-#SSTATE_DIR = "${HOME}/sstate-cache"
+#SSTATE_DIR = "${TOPDIR}/sstate-cache"
+SSTATE_DIR = "${HOME}/sstate-cache"
+
+### Share ccache files between different builds
+#   Set CCACHE_TOP_DIR to a shared dir
+#   CCACHE_TOP_DIR = /path/to/shared_ccache/
+#CCACHE_TOP_DIR = "${TMPDIR}/ccache"
+# recommended:
+CCACHE_TOP_DIR = "${HOME}/.ccache"
 
 ### sdk options
 #
@@ -87,7 +95,8 @@ BB_DISKMON_DIRS = "\
 #
 BB_HASHSERVE = "auto"
 BB_SIGNATURE_HANDLER = "OEEquivHash"
-
+#
+# https://docs.yoctoproject.org/ref-manual/variables.html#term-BB_DANGLINGAPPENDS_WARNONLY
 BB_DANGLINGAPPENDS_WARNONLY = "1"
 
 ### Qemu configuration
@@ -136,14 +145,14 @@ IMAGE_BASENAME = "my-image"
 #DISTRO_VERSION = "22.5.0"
 
 ### Release type string
-#  Possible types are beta, release, nightly, all others means personal
+#  Possible types are beta, release, nightly, all others means what ever you want
 #
 #DISTRO_TYPE = "beta"
 
 ### IMAGE_NAME_SUFFIXES:
 #
 #IMAGE_VERSION_SUFFIX="-${DATE}"
-## proposed:
+### proposed:
 #IMAGE_VERSION_SUFFIX="-${DISTRO_TYPE}"
 #IMAGE_VERSION_SUFFIX="-${DATE}-${DISTRO_TYPE}"
 #IMAGE_VERSION_SUFFIX="-${PR}"
@@ -153,14 +162,14 @@ IMAGE_BASENAME = "my-image"
 
 ### Complete image name
 #
-#IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE}-v${DISTRO_VERSION}${IMAGE_VERSION_SUFFIX}"
+#IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE_BRAND}-${MACHINE_NAME}-${DISTRO_VERSION}${IMAGE_VERSION_SUFFIX}"
 
 ### Default image root password
 # set initial password for user root. Keep empty for root:
 #
 ROOTPW = ""
 
-### Add Image Maintainer and host build machinehere
+### Add Image Maintainer and host build machine here
 #
 # CREATOR = "${USER}"
 # KBUILD_BUILD_USER = "${CREATOR}"
@@ -171,31 +180,29 @@ KBUILD_BUILD_HOST = "127.0.0.1"
 GIT_USER = "root"
 MAIL = "root@${MACHINE}"
 
-### dev keys for neutrino gui
-# NOTE: Here you see empty entries! NOT WORKING! Own key are required!
-#
-## NOTE: WEATHER_DEV_KEY for darksky not longer used and are not longer valid
-## WEATHER_DEV_KEY = "dedec626c1ab3998aca1c74ee43264cc"
-## Beginning on March 31st, 2023 the Dark Sky API will no longer be available.
-## WeatherKit, a new Apple API available on iOS, iPadOS, macOS, tvOS, 
-## and web that provides access to the new Apple Weather forecast data.
-## Now in use is: openweather map
-# 
+### dev keys for neutrino gui and weather plugin
+# NOTE: Here you see empty entries! NOT WORKING! Own keys are required!
 # You can also include a file eg. named "local.conf.devkeys.inc"
-# and add these lines into your included file:
+# Modify and add these line:
 # include /<path>/<to>/local.conf.devkeys.inc
 #
+# NOTE: Beginning on March 31st, 2023 the Dark Sky API will not longer be available.
+# WeatherKit, a new Apple API available on iOS, iPadOS, macOS, tvOS, 
+# and web that provides access to the new Apple Weather forecast data.
+# The WEATHER_DEV_KEY variable is not longer used for darksky keys
+# Currently used provider is: openweather map
+WEATHER_DEV_KEY = ""
+# YouTube, TMDB, OMDB, ShoutCast
 YT_DEV_KEY = ""
 TMDB_DEV_KEY = ""
 SHOUTCAST_DEV_KEY = ""
 OMDB_API_KEY = ""
-WEATHER_DEV_KEY = ""
-
 
 ### Extra build config options for neutrino build
 #   e.g: to enable the neutrino test menu
 #   NOTE! Works only with FLAVOUR = "tuxbox"
-#   keep this entry disabled, if you want to use an other FLAVOUR the "tuxbox".
+#   Keep this entry disabled, if you want to use an other FLAVOUR than "tuxbox".
+#   and add these lines into your local.conf within your build directory
 # EXTRA_OECONF_append_pn-neutrino-mp = " \
 # 	--enable-testing \
 # "
@@ -332,7 +339,8 @@ SSTATE_MIRRORS += "\
 # 			kodi \
 # "
 
-### Put additional packages that should be packaged into your image. Separated with a whitespace. or use IMAGE_INSTALL += ...
+### Put additional packages that should be packaged into your image. Separated with a whitespace. or use IMAGE_INSTALL += ...
+
 # https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#var-IMAGE_INSTALL
 # See: ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
 #

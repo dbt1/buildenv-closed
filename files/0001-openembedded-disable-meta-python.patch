@@ -1,0 +1,24 @@
+From 090a04acb63ed1d7fc829fa41de9c5ee86d249c1 Mon Sep 17 00:00:00 2001
+From: Thilo Graf <dbt@novatux.de>
+Date: Sun, 24 Jul 2022 14:53:27 +0200
+Subject: [PATCH 1/2] openembedded: disable meta-python
+
+---
+ meta-multimedia/conf/layer.conf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta-multimedia/conf/layer.conf b/meta-multimedia/conf/layer.conf
+index be0e2b362..eb10c6eaa 100644
+--- a/meta-multimedia/conf/layer.conf
++++ b/meta-multimedia/conf/layer.conf
+@@ -29,6 +29,6 @@ BBFILE_PRIORITY_multimedia-layer = "6"
+ # cause compatibility issues with other layers
+ LAYERVERSION_multimedia-layer = "1"
+ 
+-LAYERDEPENDS_multimedia-layer = "core meta-python"
++#LAYERDEPENDS_multimedia-layer = "core meta-python"
+ 
+ LAYERSERIES_COMPAT_multimedia-layer = "gatesgarth"
+-- 
+2.35.1
+
