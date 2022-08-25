@@ -9,6 +9,7 @@
 ## Preparation
 
 ### Install required host packages (Debian 11)
+For usage with other distributions see: [Yocto Project Quick Build](https://docs.yoctoproject.org/3.2.4/ref-manual/ref-system-requirements.html#supported-linux-distributions)
 > :memo: **NOTE:** If you are using the Tuxbox-Builder VM (this is not mandatory) please jump to [step 1](#1-Clone-init-script). The Tuxbox-Builder VM already contains required packages. For details and download of Tuxbox-Builder VM see: [Tuxbox-Builder](https://sourceforge.net/projects/n4k/files/Tuxbox-Builder)
 
 ```bash
@@ -17,7 +18,6 @@ chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianuti
 iputils-ping python3-git python3-jinja2 libegl1-mesa pylint3 xterm subversion locales-all \
 libxml2-utils ninja-build default-jre clisp libcapstone4 libsdl2-dev doxygen
 ```
-For usage with other distributions see: [Yocto Project Quick Build](https://docs.yoctoproject.org/3.2.4/ref-manual/ref-system-requirements.html#supported-linux-distributions)
 
 #### Recommended additional packages for graphical support and analyzing (e.g. with Kdevelop, Meld):
 ```bash
