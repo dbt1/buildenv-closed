@@ -183,7 +183,7 @@ function clone_meta () {
 	TMP_LAYER_BRANCH=$BRANCH_NAME
 
 	if test ! -d $TARGET_GIT_PATH/.git; then
-		echo -e "\033[35;1mclone from $LAYER_GIT_URL into $TARGET_GIT_PATH (branch $BRANCH_NAME)\033[0m"
+		echo -e "\033[35;1mclone branch $BRANCH_NAME from $LAYER_GIT_URL into $TARGET_GIT_PATH\033[0m"
 		do_exec "git clone -b $BRANCH_NAME $LAYER_GIT_URL $TARGET_GIT_PATH" ' ' 'show_output'
 		do_exec "git -C $TARGET_GIT_PATH checkout $BRANCH_HASH -b $IMAGE_VERSION"
 		do_exec "git -C $TARGET_GIT_PATH pull -r origin $BRANCH_NAME" ' ' 'show_output'
