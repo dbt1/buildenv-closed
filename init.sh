@@ -6,7 +6,8 @@ BASEPATH=`pwd`
 TIMESTAMP=`date '+%Y%m%d_%H%M%S'`
 
 # only current version
-IMAGE_VERSION=`git -C $BASEPATH rev-parse --abbrev-ref HEAD`
+# IMAGE_VERSION=`git -C $BASEPATH rev-parse --abbrev-ref HEAD`
+IMAGE_VERSION="3.2"
 
 FILES_DIR="$BASEPATH/files"
 
@@ -288,15 +289,6 @@ fi
 if test ! -f $BASEPATH/local.conf.common.inc; then
 	echo -e "\033[37;1mCONFIG:\033[0m\tcreate $BASEPATH/local.conf.common.inc as include file for layer configuration ..."
 	do_exec "cp -v $BASEPATH/local.conf.common.inc.sample $BASEPATH/local.conf.common.inc"
-else
-	echo -e "\033[37;1mNOTE:\tLocal configuration not considered\033[0m"
-	echo -e "\t##########################################################################################"
-	echo -e "\t# $BASEPATH/local.conf.common.inc already exists.				         #"
-	echo -e "\t# Nothing was changed on this file for your configuration.				 #"
-	echo -e "\t# Possible changes at sample configuration will be ignored.				 #"
-	echo -e "\t# You should check local configuration and modify your configuration if required.	 #"
-	echo -e "\t# \033[37;1m$BASEPATH/local.conf.common.inc\033[0m                                    	         #"
-	echo -e "\t##########################################################################################"
 fi
 
 # get matching machine type from machine build id
@@ -323,6 +315,21 @@ function get_real_machine_id() {
 		RMI_RES=$MACHINEBUILD
 	fi
 	echo $RMI_RES
+}
+
+# function to create file enrties into a file, already existing entry will be ignored
+function set_file_entry () {
+	FILE_NAME=$1
+	FILE_SEARCH_ENTRY=$2
+	FILE_NEW_ENTRY=$3
+	if test ! -f $FILE_NAME; then
+		echo $FILE_NEW_ENTRY > $FILE_NAME
+	else
+		HAS_ENTRY=`grep -c -w $FILE_SEARCH_ENTRY $FILE_NAME`
+		if [ "$HAS_ENTRY" == "0" ] ; then
+			echo $FILE_NEW_ENTRY >> $FILE_NAME
+		fi
+	fi
 }
 
 # function to create configuration for box types
@@ -352,50 +359,48 @@ function create_local_config () {
 		# move config files into conf directory
 		if test -f $BASEPATH/local.conf.common.inc; then
 			LOCAL_CONFIG_FILE_PATH=$MACHINE_BUILD_DIR/conf/local.conf
-			if test ! -f $LOCAL_CONFIG_FILE_PATH.$BACKUP_SUFFIX || test ! -f $LOCAL_CONFIG_FILE_PATH; then
-				echo -e "\tcreate configuration for $CLC_ARG1 ... "
-				if test -f $LOCAL_CONFIG_FILE_PATH; then
-					do_exec "mv -v $LOCAL_CONFIG_FILE_PATH $LOCAL_CONFIG_FILE_PATH.$BACKUP_SUFFIX"
-				fi
-				# add line 1, include for local.conf.common.inc
-				echo "include $BASEPATH/local.conf.common.inc" > $LOCAL_CONFIG_FILE_PATH
 
-				# add line 2
-				M_TYPE='MACHINE = "'`get_real_machine_type $CLC_ARG1`'"'
-				echo $M_TYPE >> $LOCAL_CONFIG_FILE_PATH
+			echo -e "\tcreate configuration for $CLC_ARG1 ... "
 
-				# add line 3
-				M_ID='MACHINEBUILD = "'`get_real_machine_id $CLC_ARG1`'"'
-				echo $M_ID >> $LOCAL_CONFIG_FILE_PATH
+			if test -f $LOCAL_CONFIG_FILE_PATH; then
+				do_exec "mv -v $LOCAL_CONFIG_FILE_PATH $LOCAL_CONFIG_FILE_PATH.$TIMESTAMP.$BACKUP_SUFFIX"
 			fi
+
+			set_file_entry $LOCAL_CONFIG_FILE_PATH "generated" "# auto generated entries by init script"
+
+			# add line 1, include for local.conf.common.inc
+			set_file_entry $LOCAL_CONFIG_FILE_PATH "$BASEPATH/local.conf.common.inc" "include $BASEPATH/local.conf.common.inc"
+
+			# add line 2, machine type
+			M_TYPE='MACHINE = "'`get_real_machine_type $CLC_ARG1`'"'
+			set_file_entry $LOCAL_CONFIG_FILE_PATH "MACHINE" "$M_TYPE"
+
+			# add line 3, machine build
+			M_ID='MACHINEBUILD = "'`get_real_machine_id $CLC_ARG1`'"'
+			set_file_entry $LOCAL_CONFIG_FILE_PATH "MACHINEBUILD" "$M_ID"
 		else
 			echo -e "\033[31;1mERROR:\033[0m:\ttemplate $BASEPATH/local.conf.common.inc not found..."
 			exit 1
 		fi
 
-		if test ! -f $MACHINE_BUILD_DIR/conf/bblayers.conf.$BACKUP_SUFFIX; then
-			echo -e "\tcreate bblayer configuration for $CLC_ARG1..."
-			do_exec "cp -v $MACHINE_BUILD_DIR/conf/bblayers.conf $MACHINE_BUILD_DIR/conf/bblayers.conf.$TIMESTAMP.$BACKUP_SUFFIX"
-			META_MACHINE_LAYER=meta-`get_metaname $CLC_ARG1`
-			echo 'BBLAYERS += " \
-			'$BUILD_ROOT_DIR'/'$TUXBOX_LAYER_NAME' \
-			'$BUILD_ROOT_DIR'/'$META_MACHINE_LAYER' \
-			'$BUILD_ROOT_DIR'/'$OE_LAYER_NAME/meta-oe' \
-			'$BUILD_ROOT_DIR'/'$OE_LAYER_NAME/meta-networking' \
-			"' >> $MACHINE_BUILD_DIR/conf/bblayers.conf
-			if test -d $BUILD_ROOT_DIR/$META_MACHINE_LAYER/recipes-kodi; then
-				echo 'BBLAYERS += " \
-				'$BUILD_ROOT_DIR'/'$PYTHON2_LAYER_NAME' \
-				"' >> $MACHINE_BUILD_DIR/conf/bblayers.conf
-			fi
-			if test -d $BUILD_ROOT_DIR/$META_MACHINE_LAYER/recipes-qt; then
-				echo 'BBLAYERS += " \
-				'$BUILD_ROOT_DIR'/'$QT5_LAYER_NAME' \
-				"' >> $MACHINE_BUILD_DIR/conf/bblayers.conf
-			fi
-		fi
+		echo -e "\tcreate bblayer configuration for $CLC_ARG1..."
+		BBLAYER_CONF_FILE="$MACHINE_BUILD_DIR/conf/bblayers.conf"
+
+		# craete backup for bblayer.conf
+		do_exec "cp -v $BBLAYER_CONF_FILE $BBLAYER_CONF_FILE.$TIMESTAMP.$BACKUP_SUFFIX"
+
+		META_MACHINE_LAYER=meta-`get_metaname $CLC_ARG1`
+
+		# add layer entries into bblayer.conf
+		set_file_entry $BBLAYER_CONF_FILE "generated" '# auto generated entries by init script'
+		LAYER_LIST=" $TUXBOX_LAYER_NAME $META_MACHINE_LAYER $OE_LAYER_NAME/meta-oe $OE_LAYER_NAME/meta-networking $PYTHON2_LAYER_NAME $QT5_LAYER_NAME "
+		for LL in $LAYER_LIST ; do
+			set_file_entry $BBLAYER_CONF_FILE $LL 'BBLAYERS += " '$BUILD_ROOT_DIR'/'$LL' "'
+		done
 	fi
 }
+
+
 
 # function create local dist directory to prepare for web access
 function create_dist_tree () {
@@ -427,18 +432,29 @@ else
 	create_local_config $MACHINE;
 fi
 
+echo -e "\033[37;1mNOTE:\tLocal configuration not considered\033[0m"
+echo -e "\t##########################################################################################"
+echo -e "\t# $BASEPATH/local.conf.common.inc already exists."
+echo -e "\t# Nothing was changed on this file for your configuration."
+echo -e "\t# Possible changes at sample configuration will be ignored."
+echo -e "\t# You should check local configuration and modify your configuration if required."
+echo -e "\t# \033[37;1m$BASEPATH/local.conf.common.inc"
+echo -e "\t# local.conf, bblayer.conf\033[0m files could be modifyed,	"
+echo -e "\t# Please check this files if required!"
+echo -e "\t##########################################################################################"
+
 create_dist_tree;
 
 # check and create distribution directory inside html directory for online update
 if test ! -L /var/www/html/dist; then
-	echo -e "\033[37;1mNOTE:\t Online update usage.\033[0m"
+	echo -e "\033[37;1mNOTE:\tOnline update.\033[0m"
 	echo -e "\t##########################################################################################"
-	echo -e "\t# /var/www/html/dist doesn't exists.                                                     #"
-	echo -e "\t# If you want to use online update, please configure your webserver and use dist content #"
-	echo -e "\t# Super user permissions are required to create symlink...                               #"
-	echo -e "\t# An easy way is to create a symlink to dist directory:                                  #"
-	echo -e "\t# \033[37;1msudo ln -s $BASEPATH/dist /var/www/html/dist\033[0m                                    #"
-	echo -e "\t########################################################################################## "
+	echo -e "\t# /var/www/html/dist doesn't exists."
+	echo -e "\t# If you want to use online update, please configure your webserver and use dist content"
+	echo -e "\t# Super user permissions are required to create symlink..."
+	echo -e "\t# An easy way is to create a symlink to dist directory:"
+	echo -e "\t# \033[37;1msudo ln -s $BASEPATH/dist /var/www/html/dist\033[0m"
+	echo -e "\t##########################################################################################"
 fi
 
 echo -e "\033[32;1mDONE!\033[0m"
