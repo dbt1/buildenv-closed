@@ -3,6 +3,7 @@
 #set -x
 
 BASEPATH=`pwd`
+TIMESTAMP=`date '+%Y%m%d_%H%M%S'`
 
 # only current version
 IMAGE_VERSION=`git -C $BASEPATH rev-parse --abbrev-ref HEAD`
@@ -29,7 +30,8 @@ HINT_IMAGE_VERSIONS="$IMAGE_VERSION"
  
 LOG_PATH=$BASEPATH/log
 mkdir -p $LOG_PATH
-LOGFILE_NAME="$0_`date '+%Y%m%d_%H%M%S'`.log"
+
+LOGFILE_NAME="$0_$TIMESTAMP.log"
 LOGFILE=$LOG_PATH/$LOGFILE_NAME
 TMP_LOGFILE=$LOG_PATH/.tmp.log
 touch $LOGFILE
@@ -373,7 +375,7 @@ function create_local_config () {
 
 		if test ! -f $MACHINE_BUILD_DIR/conf/bblayers.conf.$BACKUP_SUFFIX; then
 			echo -e "\tcreate bblayer configuration for $CLC_ARG1..."
-			do_exec "cp -v $MACHINE_BUILD_DIR/conf/bblayers.conf $MACHINE_BUILD_DIR/conf/bblayers.conf.$BACKUP_SUFFIX"
+			do_exec "cp -v $MACHINE_BUILD_DIR/conf/bblayers.conf $MACHINE_BUILD_DIR/conf/bblayers.conf.$TIMESTAMP.$BACKUP_SUFFIX"
 			META_MACHINE_LAYER=meta-`get_metaname $CLC_ARG1`
 			echo 'BBLAYERS += " \
 			'$BUILD_ROOT_DIR'/'$TUXBOX_LAYER_NAME' \
