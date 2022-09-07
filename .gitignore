@@ -9,6 +9,7 @@ build-neutrino
 local.conf.common.inc
 dist/*
 build*
+backups*
 *.orig
 *.log
 local build increment

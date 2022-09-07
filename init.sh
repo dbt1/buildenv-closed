@@ -32,6 +32,9 @@ HINT_IMAGE_VERSIONS="$IMAGE_VERSION"
 LOG_PATH=$BASEPATH/log
 mkdir -p $LOG_PATH
 
+BACKUP_PATH=$BASEPATH/backups
+mkdir -p $BACKUP_PATH
+
 LOGFILE_NAME="$0_$TIMESTAMP.log"
 LOGFILE=$LOG_PATH/$LOGFILE_NAME
 TMP_LOGFILE=$LOG_PATH/.tmp.log
@@ -335,9 +338,14 @@ function set_file_entry () {
 # function to create configuration for box types
 function create_local_config () {
 	CLC_ARG1=$1
+
 	if [ "$CLC_ARG1" != "all" ]; then
+
 		MACHINE_BUILD_DIR=$BUILD_ROOT/$CLC_ARG1
 		mkdir -p $BUILD_ROOT
+
+		BACKUP_CONFIG_DIR="$BACKUP_PATH/$CLC_ARG1/conf"
+		mkdir -p $BACKUP_CONFIG_DIR
 
 		if test -d $BUILD_ROOT_DIR/$CLC_ARG1; then
 			if test ! -L $BUILD_ROOT_DIR/$CLC_ARG1; then
@@ -363,7 +371,7 @@ function create_local_config () {
 			echo -e "\tcreate configuration for $CLC_ARG1 ... "
 
 			if test -f $LOCAL_CONFIG_FILE_PATH; then
-				do_exec "mv -v $LOCAL_CONFIG_FILE_PATH $LOCAL_CONFIG_FILE_PATH.$TIMESTAMP.$BACKUP_SUFFIX"
+				do_exec "cp -v $LOCAL_CONFIG_FILE_PATH $BACKUP_CONFIG_DIR/local.conf.$TIMESTAMP.$BACKUP_SUFFIX"
 			fi
 
 			set_file_entry $LOCAL_CONFIG_FILE_PATH "generated" "# auto generated entries by init script"
@@ -387,7 +395,9 @@ function create_local_config () {
 		BBLAYER_CONF_FILE="$MACHINE_BUILD_DIR/conf/bblayers.conf"
 
 		# craete backup for bblayer.conf
-		do_exec "cp -v $BBLAYER_CONF_FILE $BBLAYER_CONF_FILE.$TIMESTAMP.$BACKUP_SUFFIX"
+		if test -f $BBLAYER_CONF_FILE; then
+			do_exec "cp -v $BBLAYER_CONF_FILE $BACKUP_CONFIG_DIR/bblayer.conf.$TIMESTAMP.$BACKUP_SUFFIX"
+		fi
 
 		META_MACHINE_LAYER=meta-`get_metaname $CLC_ARG1`
 
