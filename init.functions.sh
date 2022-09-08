@@ -18,32 +18,32 @@ function do_exec() {
 	DEX_ARG1=$1
 	DEX_ARG2=$2
 	DEX_ARG3=$3
-	rm -f $TMP_LOGFILE
+# 	rm -f $TMP_LOGFILE
+	echo "[`date '+%Y%m%d_%H%M%S'`] EXEC: $DEX_ARG1" >> $LOGFILE
 	if [ "$DEX_ARG3" == "show_output" ]; then
 		$DEX_ARG1
 	else
 		$DEX_ARG1 > /dev/null 2>> $TMP_LOGFILE
 	fi
 #	echo -e "DEX_ARG1 [$DEX_ARG1] DEX_ARG2 [$DEX_ARG2] DEX_ARG3 [$DEX_ARG3]"
+	if test -f $TMP_LOGFILE; then
+		LOGTEXT=`cat $TMP_LOGFILE`
+		echo > $TMP_LOGFILE
+	fi
 	if [ $? != 0 ]; then
-		if test -f $TMP_LOGFILE; then
-			LOGTEXT=`cat $TMP_LOGFILE`
-		fi
-		echo "$LOGTEXT" >> $LOGFILE
 		if [ "$DEX_ARG2" != "no_exit" ]; then
 			if [ "$LOGTEXT" != "" ]; then
 				echo -e "\033[31;1mERROR:\t\033[0m $LOGTEXT"
+				echo "ERROR: $LOGTEXT" >> $LOGFILE
 			fi
 			exit 1
 		else
 			if [ "$LOGTEXT" != "" ]; then
 				echo -e "\033[37;1mNOTE:\t\033[0m $LOGTEXT"
+				echo "NOTE: $LOGTEXT" >> $LOGFILE
  			fi
 		fi
 	fi
-# 	if [ $DEX_ARG2 == "no_exit" ]; then
-# 		echo -e "\033[32;1mOK:\033[0m `cat $LOGFILE`"
-# 	fi
 }
 
 function get_metaname () {
@@ -78,7 +78,7 @@ function clone_meta () {
 	TMP_LAYER_BRANCH=$BRANCH_NAME
 
 	if test ! -d $TARGET_GIT_PATH/.git; then
-		echo -e "\033[35;1mclone branch $BRANCH_NAME from $LAYER_GIT_URL into $TARGET_GIT_PATH\033[0m"
+		echo -e "\033[35;1mclone branch $BRANCH_NAME from $LAYER_GIT_URL\033[0m"
 		do_exec "git clone -b $BRANCH_NAME $LAYER_GIT_URL $TARGET_GIT_PATH" ' ' 'show_output'
 		do_exec "git -C $TARGET_GIT_PATH checkout $BRANCH_HASH -b $IMAGE_VERSION"
 		do_exec "git -C $TARGET_GIT_PATH pull -r origin $BRANCH_NAME" ' ' 'show_output'
@@ -161,12 +161,19 @@ function set_file_entry () {
 	FILE_NEW_ENTRY=$3
 	if test ! -f $FILE_NAME; then
 		echo $FILE_NEW_ENTRY > $FILE_NAME
+		return 1
 	else
+		OLD_CONTENT=`cat $FILE_NAME`
 		HAS_ENTRY=`grep -c -w $FILE_SEARCH_ENTRY $FILE_NAME`
 		if [ "$HAS_ENTRY" == "0" ] ; then
 			echo $FILE_NEW_ENTRY >> $FILE_NAME
 		fi
+		NEW_CONTENT=`cat $FILE_NAME`
+		if [ "$OLD_CONTENT" == "$NEW_CONTENT" ] ; then
+			return 1
+		fi
 	fi
+	return 0
 }
 
 # function to create configuration for box types
@@ -176,38 +183,46 @@ function create_local_config () {
 	if [ "$CLC_ARG1" != "all" ]; then
 
 		MACHINE_BUILD_DIR=$BUILD_ROOT/$CLC_ARG1
-		mkdir -p $BUILD_ROOT
+		do_exec "mkdir -p $BUILD_ROOT"
 
 		BACKUP_CONFIG_DIR="$BACKUP_PATH/$CLC_ARG1/conf"
-		mkdir -p $BACKUP_CONFIG_DIR
+		do_exec "mkdir -p $BACKUP_CONFIG_DIR"
+
+		LOCAL_CONFIG_FILE_PATH=$MACHINE_BUILD_DIR/conf/local.conf
 
 		if test -d $BUILD_ROOT_DIR/$CLC_ARG1; then
 			if test ! -L $BUILD_ROOT_DIR/$CLC_ARG1; then
 				# generate build/config symlinks for compatibility
 				echo -e "\033[37;1m\tcreate compatible symlinks directory for $CLC_ARG1 environment ...\033[0m"
-				mv $BUILD_ROOT_DIR/$CLC_ARG1 $BUILD_ROOT
-				ln -s $MACHINE_BUILD_DIR $BUILD_ROOT_DIR/$CLC_ARG1
-			fi
-		else
-			# generate default config
-			if test ! -d $MACHINE_BUILD_DIR/conf; then
-				echo -e "\033[37;1m\tcreate build directory for $CLC_ARG1 environment ...\033[0m"
-				do_exec "cd $BUILD_ROOT_DIR"
-				do_exec ". ./oe-init-build-env $MACHINE_BUILD_DIR"
-				do_exec "cd $BASEPATH"
+				do_exec "mv -v $BUILD_ROOT_DIR/$CLC_ARG1 $BUILD_ROOT"
+				do_exec "ln -sv $MACHINE_BUILD_DIR $BUILD_ROOT_DIR/$CLC_ARG1"
 			fi
 		fi
 
-		# move config files into conf directory
-		if test -f $BASEPATH/local.conf.common.inc; then
-			LOCAL_CONFIG_FILE_PATH=$MACHINE_BUILD_DIR/conf/local.conf
+		# generate default config
+		if test ! -d $MACHINE_BUILD_DIR/conf; then
+			echo -e "\033[37;1m\tcreating build directory for $CLC_ARG1 environment ...\033[0m"
+			do_exec "cd $BUILD_ROOT_DIR"
+			do_exec ". ./oe-init-build-env $MACHINE_BUILD_DIR"
+			# we need a clean config file
+			if test -f $LOCAL_CONFIG_FILE_PATH & test ! -f $LOCAL_CONFIG_FILE_PATH.origin; then
+				# so we save the origin local.conf
+				do_exec "mv -v $LOCAL_CONFIG_FILE_PATH $LOCAL_CONFIG_FILE_PATH.origin"
+			fi
+			do_exec "cd $BASEPATH"
+			echo "[Desktop Entry]" > $BUILD_ROOT/.directory
+			echo "Icon=folder-green" >> $BUILD_ROOT/.directory
+		fi
 
-			echo -e "\tmodify $LOCAL_CONFIG_FILE_PATH for $CLC_ARG1 ... "
+		# modify or upgrade config files inside conf directory
+		if test -f $BASEPATH/local.conf.common.inc; then
 
 			if test -f $LOCAL_CONFIG_FILE_PATH; then
-				do_exec "cp -v $LOCAL_CONFIG_FILE_PATH $BACKUP_CONFIG_DIR/local.conf.$TIMESTAMP.$BACKUP_SUFFIX"
+				HASHSTAMP=`MD5SUM $LOCAL_CONFIG_FILE_PATH`
+				do_exec "cp -v $LOCAL_CONFIG_FILE_PATH $BACKUP_CONFIG_DIR/local.conf.$HASHSTAMP.$BACKUP_SUFFIX"
 			fi
 
+			# add init note
 			set_file_entry $LOCAL_CONFIG_FILE_PATH "generated" "# auto generated entries by init script"
 
 			# add line 1, include for local.conf.common.inc
@@ -215,22 +230,26 @@ function create_local_config () {
 
 			# add line 2, machine type
 			M_TYPE='MACHINE = "'`get_real_machine_type $CLC_ARG1`'"'
-			set_file_entry $LOCAL_CONFIG_FILE_PATH "MACHINE" "$M_TYPE"
+			if set_file_entry $LOCAL_CONFIG_FILE_PATH "MACHINE" "$M_TYPE" == 1; then
+				echo -e "\t\033[37;1m$LOCAL_CONFIG_FILE_PATH has been upgraded with entry: $M_TYPE \033[0m"
+			fi
 
 			# add line 3, machine build
 			M_ID='MACHINEBUILD = "'`get_real_machine_id $CLC_ARG1`'"'
-			set_file_entry $LOCAL_CONFIG_FILE_PATH "MACHINEBUILD" "$M_ID"
+			if set_file_entry $LOCAL_CONFIG_FILE_PATH "MACHINEBUILD" "$M_ID" == 1; then
+				echo -e "\t\033[37;1m$LOCAL_CONFIG_FILE_PATH has been upgraded with entry: $M_ID \033[0m"
+			fi
 		else
 			echo -e "\033[31;1mERROR:\033[0m:\ttemplate $BASEPATH/local.conf.common.inc not found..."
 			exit 1
 		fi
 
 		BBLAYER_CONF_FILE="$MACHINE_BUILD_DIR/conf/bblayers.conf"
-		echo -e "\tmodify $BBLAYER_CONF_FILE for $CLC_ARG1..."
 
 		# craete backup for bblayer.conf
 		if test -f $BBLAYER_CONF_FILE; then
-			do_exec "cp -v $BBLAYER_CONF_FILE $BACKUP_CONFIG_DIR/bblayer.conf.$TIMESTAMP.$BACKUP_SUFFIX"
+			HASHSTAMP=`MD5SUM $BBLAYER_CONF_FILE`
+			do_exec "cp -v $BBLAYER_CONF_FILE $BACKUP_CONFIG_DIR/bblayer.conf.$HASHSTAMP.$BACKUP_SUFFIX"
 		fi
 
 		META_MACHINE_LAYER=meta-`get_metaname $CLC_ARG1`
@@ -239,7 +258,9 @@ function create_local_config () {
 		set_file_entry $BBLAYER_CONF_FILE "generated" '# auto generated entries by init script'
 		LAYER_LIST=" $TUXBOX_LAYER_NAME $META_MACHINE_LAYER $OE_LAYER_NAME/meta-oe $OE_LAYER_NAME/meta-networking $PYTHON2_LAYER_NAME $QT5_LAYER_NAME "
 		for LL in $LAYER_LIST ; do
-			set_file_entry $BBLAYER_CONF_FILE $LL 'BBLAYERS += " '$BUILD_ROOT_DIR'/'$LL' "'
+			if set_file_entry $BBLAYER_CONF_FILE $LL 'BBLAYERS += " '$BUILD_ROOT_DIR'/'$LL' "' == 1;then
+				echo -e "\t\033[37;1m$BBLAYER_CONF_FILE has been upgraded with entry: $LL... \033[0m"
+			fi
 		done
 	fi
 }
@@ -258,9 +279,15 @@ function create_dist_tree () {
 	DIST_LIST=`ls $BUILD_ROOT`
 	for DL in  $DIST_LIST ; do
 		DEPLOY_DIR="$BUILD_ROOT/$DL/tmp/deploy"
-		ln -sf $DEPLOY_DIR $DIST_BASEDIR/$DL
+		do_exec "ln -sfv $DEPLOY_DIR $DIST_BASEDIR/$DL"
 		if test -L "$DIST_BASEDIR/$DL/deploy"; then
-			unlink $DIST_BASEDIR/$DL/deploy
+			do_exec "unlink -v $DIST_BASEDIR/$DL/deploy"
 		fi
 	done
+}
+
+function MD5SUM () {
+	MD5SUM_FILE=$1
+	MD5STAMP=`md5sum $MD5SUM_FILE |cut -f 1 -d " "`
+	echo $MD5STAMP
 }

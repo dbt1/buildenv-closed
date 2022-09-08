@@ -176,22 +176,25 @@ else
 	create_local_config $MACHINE;
 fi
 
-echo -e "\033[37;1mNOTE:\tLocal configuration not considered\033[0m"
-echo -e "\t##########################################################################################"
-echo -e "\t# $BASEPATH/local.conf.common.inc already exists."
-echo -e "\t# Nothing was changed on this file for your configuration."
-echo -e "\t# Possible changes at sample configuration will be ignored."
-echo -e "\t# You should check local configuration and modify your configuration if required."
-echo -e "\t# \033[37;1m$BASEPATH/local.conf.common.inc"
-echo -e "\t# local.conf, bblayer.conf\033[0m files could be modifyed,	"
-echo -e "\t# Please check this files if required!"
-echo -e "\t##########################################################################################"
+echo -e "\033[37;1mNOTE:\tLocal setup\033[0m"
+echo -e "\t############################################################################################"
+echo -e "\t# Possible new or obsolete options or variables at sample configuration will be ignored."
+echo -e "\t# $BASEPATH/local.conf.common.inc already exists and nothing"
+echo -e "\t# was changed on this file for your configuration."
+echo -e "\t# You should check $BASEPATH/local.conf.common.inc and modify this file if required."
+echo -e "\t#"
+echo -e "\t# Please check this files for modifications or upgrades:"
+echo -e "\t# \033[37;1m$BUILD_ROOT/<machine>/bblayer.conf\033[0m"
+echo -e "\t# \033[37;1m$BUILD_ROOT/<machine>/local.conf\033[0m"
+echo -e "\t#"
+echo -e "\t# Please take a look at the README.md for next steps!"
+echo -e "\t###########################################################################################"
 
 create_dist_tree;
 
 # check and create distribution directory inside html directory for online update
 if test ! -L /var/www/html/dist; then
-	echo -e "\033[37;1mNOTE:\tOnline update.\033[0m"
+	echo -e "\033[37;1mNOTE:\tLocal online update.\033[0m"
 	echo -e "\t##########################################################################################"
 	echo -e "\t# /var/www/html/dist doesn't exists."
 	echo -e "\t# If you want to use online update, please configure your webserver and use dist content"
