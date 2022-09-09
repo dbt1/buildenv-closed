@@ -176,33 +176,58 @@ else
 	create_local_config $MACHINE;
 fi
 
-echo -e "\033[37;1mNOTE:\tLocal setup\033[0m"
-echo -e "\t############################################################################################"
-echo -e "\t# Possible new or obsolete options or variables at sample configuration will be ignored."
-echo -e "\t# $BASEPATH/local.conf.common.inc already exists and nothing"
-echo -e "\t# was changed on this file for your configuration."
-echo -e "\t# You should check $BASEPATH/local.conf.common.inc and modify this file if required."
-echo -e "\t#"
-echo -e "\t# Please check this files for modifications or upgrades:"
-echo -e "\t# \033[37;1m$BUILD_ROOT/<machine>/bblayer.conf\033[0m"
-echo -e "\t# \033[37;1m$BUILD_ROOT/<machine>/local.conf\033[0m"
-echo -e "\t#"
-echo -e "\t# Please take a look at the README.md for next steps!"
-echo -e "\t###########################################################################################"
 
 create_dist_tree;
 
+echo -e "\033[37;1mNOTE:\033[0m"
+
 # check and create distribution directory inside html directory for online update
 if test ! -L /var/www/html/dist; then
-	echo -e "\033[37;1mNOTE:\tLocal online update.\033[0m"
-	echo -e "\t##########################################################################################"
-	echo -e "\t# /var/www/html/dist doesn't exists."
-	echo -e "\t# If you want to use online update, please configure your webserver and use dist content"
-	echo -e "\t#"
-	echo -e "\t# An easy way is to create a symlink to dist directory:"
-	echo -e "\t# \033[37;1msudo ln -s $BASEPATH/dist /var/www/html/dist\033[0m"
-	echo -e "\t##########################################################################################"
-fi
+	echo -e "\033[37;1m\tLocal setup for package online update.\033[0m"
+	echo -e "\t############################################################################################"
+	echo -e "\t/var/www/html/dist doesn't exists."
+	echo -e "\tIf you want to use online update, please configure your webserver and use dist content"
+	echo -e "\t"
+	echo -e "\tAn easy way is to create a symlink to dist directory:"
+	echo -e "\t"
+	echo -e "\t\t\033[37;1msudo ln -s $BASEPATH/dist /var/www/html/dist\033[0m"
 
+fi
+echo -e "\t"
+echo -e "\033[37;1m\tLocal environment setup\033[0m"
+echo -e "\t############################################################################################"
+echo -e "\t$BASEPATH/local.conf.common.inc was created by the 1st call of $0 from"
+echo -e "\t$BASEPATH/local.conf.common.inc.sample"
+echo -e "\tIf this file already exists nothing was changed on this file for your configuration."
+echo -e "\tYou should check $BASEPATH/local.conf.common.inc and modify this file if required."
+echo -e "\t"
+echo -e "\tUnlike here: Please check this files for modifications or upgrades:"
+echo -e "\t"
+echo -e "\t\t\033[37;1m$BUILD_ROOT/<machine>/bblayer.conf\033[0m"
+echo -e "\t\t\033[37;1m$BUILD_ROOT/<machine>/local.conf\033[0m"
+# echo -e "\t############################################################################################"
+echo -e "\t"
+echo -e "\033[37;1m\tStart build\033[0m"
+echo -e "\t############################################################################################"
+echo -e "\tNow you are ready to build your own images and packages."
+echo -e "\tSelectable machines are:"
+echo -e "\t"
+echo -e "\t\t\033[37;1m$MACHINES\033[0m"
+echo -e "\t"
+echo -e "\t Select your favorite machine (or identical) and the next steps are:\033[37;1m"
+echo -e "\t"
+echo -e "\t\tcd $BUILD_ROOT_DIR"
+echo -e "\t\t. ./oe-init-build-env build/<machine>"
+echo -e "\t\tbitbake neutrino-image"
+echo -e "\t\033[0m"
+
+echo -e "\t"
+echo -e "\033[37;1m\tUpdating meta-layers\033[0m"
+echo -e "\t############################################################################################"
+echo -e "\tExecute init script again."
+echo -e "\t"
+echo -e "\tFor more informations and next steps take a look at the README.md!"
+echo -e "\t"
 echo -e "\033[32;1mDONE!\033[0m"
+
 exit 0

@@ -203,7 +203,7 @@ OMDB_API_KEY = ""
 #   NOTE! Works only with FLAVOUR = "tuxbox"
 #   Keep this entry disabled, if you want to use an other FLAVOUR than "tuxbox".
 #   and add these lines into your local.conf within your build directory
-# EXTRA_OECONF_append_pn-neutrino-mp = " \
+# EXTRA_OECONF_append_pn-neutrino-mp += " \
 # 	--enable-testing \
 # "
 
@@ -233,7 +233,8 @@ PACKAGE_CLASSES = "package_ipk"
 #UPDATE_SERVER_URL = "http://<hostname>"
 #UPDATE_SERVER_URL = "http://localhost"
 UPDATE_SERVER_URL = "file:///var/www/html"
-#UPDATE_SERVER_URL = "https://update.tuxbox-neutrino.org"
+#UPDATE_SERVER_URL = "https://n4k.sourceforge.io"
+#UPDATE_SERVER_URL = "http://n4k.sourceforge.io"
 #
 # If local feed with Tuxbox-Builder VM is available:
 #UPDATE_SERVER_URL = "http://<Tuxbox-Builder IP or HOSTNAME>"
@@ -263,12 +264,16 @@ RELEASE_TEXT_LOCATION = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACH
 
 ### URLs for download mirrors from Yocto 
 #
+# global archive and source urls
+ARCHIVE_SOURCE_URL = "http://n4k.sourceforge.io/sources"
+YOCTO_SOURCE_URL = "http://www.yoctoproject.org/sources"
+
 PREMIRRORS_prepend = "\
-     https://.*/.* https://archiv.tuxbox-neutrino.org/ \n \
-     git://.*/.* http://www.yoctoproject.org/sources/ \n \
-     ftp://.*/.* http://www.yoctoproject.org/sources/ \n \
-     http://.*/.* http://www.yoctoproject.org/sources/ \n \
-     https://.*/.* http://www.yoctoproject.org/sources/ \n \
+     https://.*/.* ${ARCHIVE_SOURCE_URL}/ \n \
+     git://.*/.* ${YOCTO_SOURCE_URL}/ \n \
+     ftp://.*/.* ${YOCTO_SOURCE_URL}/ \n \
+     http://.*/.* ${YOCTO_SOURCE_URL}/ \n \
+     https://.*/.* ${YOCTO_SOURCE_URL}/ \n \
 "
 ### Download mirrors from Local file mirrors (read only)
 #
@@ -280,7 +285,7 @@ PREMIRRORS_prepend = "\
 #    see: https://wiki.yoctoproject.org/wiki/How_do_I#Q:_How_do_I_create_my_own_source_download_mirror_.3F
 #
 #    This is our own stock of archives, those are created by our image builds.
-SOURCE_MIRROR_URL = "https://archiv.tuxbox-neutrino.org"
+SOURCE_MIRROR_URL = "${ARCHIVE_SOURCE_URL}"
 INHERIT += "own-mirrors" 
 BB_GENERATE_MIRROR_TARBALLS = "0" 
 #BB_NO_NETWORK = "1"
@@ -305,7 +310,7 @@ SSTATE_MIRRORS += "\
 "
 # This is our own stock of sstate cache related of last tuxbox builds.
 SSTATE_MIRRORS += "\
-    file://.* https://sstate.tuxbox-upload.de/all/sstate-cache/PATH;downloadfilename=PATH \n \
+    file://.* http://n4k.sourceforge.io/sstate-cache/PATH;downloadfilename=PATH \n \
 "
 
 # If you are using the TuxboxBuilder VM and it's running, you can use its sstate cache related of last builds.
