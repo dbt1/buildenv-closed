@@ -198,7 +198,7 @@ if test ! -L /var/www/html/dist; then
 	echo -e "\t##########################################################################################"
 	echo -e "\t# /var/www/html/dist doesn't exists."
 	echo -e "\t# If you want to use online update, please configure your webserver and use dist content"
-	echo -e "\t# Super user permissions are required to create symlink..."
+	echo -e "\t#"
 	echo -e "\t# An easy way is to create a symlink to dist directory:"
 	echo -e "\t# \033[37;1msudo ln -s $BASEPATH/dist /var/www/html/dist\033[0m"
 	echo -e "\t##########################################################################################"
