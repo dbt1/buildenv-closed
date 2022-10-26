@@ -310,7 +310,8 @@ SSTATE_MIRRORS += "\
 "
 # This is our own stock of sstate cache related of last tuxbox builds.
 SSTATE_MIRRORS += "\
-    file://.* http://n4k.sourceforge.io/sstate-cache/PATH;downloadfilename=PATH \n \
+    file://.* https://n4k.sourceforge.io/sstate-cache/3.2/sstate-cache/PATH;downloadfilename=PATH \n \
+    file://.* https://n4k.sourceforge.io/sstate-cache/devel/sstate-cache/PATH;downloadfilename=PATH \n \
 "
 
 # If you are using the TuxboxBuilder VM and it's running, you can use its sstate cache related of last builds.
