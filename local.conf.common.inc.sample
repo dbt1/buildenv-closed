@@ -397,3 +397,8 @@ IMAGE_INSTALL += " \
 #   see> https://docs.yoctoproject.org/singleindex.html#enabling-and-disabling-build-history
 #INHERIT += "buildhistory"
 #BUILDHISTORY_COMMIT = "1"
+
+### Replace some lame fetch urls
+#
+#BINUTILS_GIT_URI = "git://github.com/bminor/binutils-gdb.git;branch=${BRANCH};protocol=https"
+#GLIBC_GIT_URI = "git://github.com/bminor/glibc.git;branch=release/2.32/master;name=glibc"
