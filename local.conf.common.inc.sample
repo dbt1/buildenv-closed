@@ -265,7 +265,7 @@ RELEASE_TEXT_LOCATION = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACH
 ### URLs for download mirrors from Yocto 
 #
 # global archive and source urls
-ARCHIVE_SOURCE_URL = "http://n4k.sourceforge.io/sources"
+ARCHIVE_SOURCE_URL = "https://n4k.sourceforge.io/sources"
 YOCTO_SOURCE_URL = "http://www.yoctoproject.org/sources"
 
 PREMIRRORS_prepend = "\

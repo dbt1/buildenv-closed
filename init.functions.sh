@@ -215,11 +215,41 @@ function create_local_config () {
 		fi
 
 		# modify or upgrade config files inside conf directory
-		if test -f $BASEPATH/local.conf.common.inc; then
+		LOCAL_CONFIG_FILE_INC_PATH=$BASEPATH/local.conf.common.inc
+		if test -f $LOCAL_CONFIG_FILE_INC_PATH; then
 
 			if test -f $LOCAL_CONFIG_FILE_PATH; then
 				HASHSTAMP=`MD5SUM $LOCAL_CONFIG_FILE_PATH`
 				do_exec "cp -v $LOCAL_CONFIG_FILE_PATH $BACKUP_CONFIG_DIR/local.conf.$HASHSTAMP.$BACKUP_SUFFIX"
+
+				# migrate settings after server switch
+				echo -e "migrate settings within $LOCAL_CONFIG_FILE_INC_PATH..."
+				sed -i -e 's|http://archiv.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_INC_PATH
+				sed -i -e 's|https://archiv.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_INC_PATH
+
+				sed -i -e 's|http://archiv.tuxbox-neutrino.org/sources|https://n4k.sourceforge.io/sources|' $LOCAL_CONFIG_FILE_INC_PATH
+				sed -i -e 's|https://archiv.tuxbox-neutrino.org/sources|https://n4k.sourceforge.io/sources|' $LOCAL_CONFIG_FILE_INC_PATH
+
+				sed -i -e 's|http://sstate.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_INC_PATH
+				sed -i -e 's|https://sstate.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_INC_PATH
+
+				sed -i -e 's|archiv.tuxbox-neutrino.org|n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_INC_PATH
+				sed -i -e 's|sstate.tuxbox-neutrino.org|n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_INC_PATH
+
+				echo -e "migrate settings within $LOCAL_CONFIG_FILE_PATH"
+				sed -i -e 's|http://archiv.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_PATH
+				sed -i -e 's|https://archiv.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_PATH
+
+				sed -i -e 's|http://archiv.tuxbox-neutrino.org/sources|https://n4k.sourceforge.io/sources|' $LOCAL_CONFIG_FILE_PATH
+				sed -i -e 's|https://archiv.tuxbox-neutrino.org/sources|https://n4k.sourceforge.io/sources|' $LOCAL_CONFIG_FILE_PATH
+
+				sed -i -e 's|http://sstate.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_PATH
+				sed -i -e 's|https://sstate.tuxbox-neutrino.org|https://n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_PATH
+
+				sed -i -e 's|archiv.tuxbox-neutrino.org|n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_PATH
+				sed -i -e 's|sstate.tuxbox-neutrino.org|n4k.sourceforge.io|' $LOCAL_CONFIG_FILE_PATH
+
+				echo -e "\033[32;1mdone ...\033[0m\n"
 			fi
 
 			# add init note
