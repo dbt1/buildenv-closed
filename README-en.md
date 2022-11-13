@@ -43,7 +43,7 @@ cd build
 > ### 2. Execute init script
 ```bash
 ./init.sh
-cd poky-3.2
+cd poky-3.2.4
 ```
 
 > ### 3. Show possible machine types
@@ -72,7 +72,7 @@ NOTE: Tasks Summary: Attempted 4568 tasks of which 4198 didn't need to be rerun 
 
 Built images and packages to find under:
 ```
-~/build/poky-3.2/build/<machine>/tmp/deploy
+~/build/poky-3.2.4/build/<machine>/tmp/deploy
 ```
 or in the dist directory:
 ```
@@ -109,7 +109,7 @@ If you want to have the full control about any target source, you should transfe
 ## Reset configuration if required
 If you want to reset your configs, please rename (delete is not recommended) the conf directory and execute the init script again. See [step 2](#2-Execute-init-script).
 ```bash
-mv $HOME/build/poky-3.2/build/<machine>/conf $HOME/build/poky-3.2/build/<machine>/conf.01
+mv $HOME/build/poky-3.2.4/build/<machine>/conf $HOME/build/poky-3.2.4/build/<machine>/conf.01
 cd $HOME/build
 ./init.sh
 ```
@@ -158,7 +158,7 @@ extensively documented and provides the best source of information.
 ## Overview of global configuration files
 These configuration files are required within the build directories for local configuration:
 
-> $HOME/build/poky-3.2/build/```<machine>```/conf/local.conf
+> $HOME/build/poky-3.2.4/build/```<machine>```/conf/local.conf
 
 This generated local.conf contains only a few lines, but has a line that points to a common configuration file that is valid for all images and supported machine types and can be fed with your own options.
 
@@ -171,11 +171,11 @@ This **.inc** file was derived from the cloned example configuration file when t
 This sample file should be untouched to avoid possible conflicts when updating the build repository and to see what might have changed.
 
 After updating the build repository, some new or changed options may have been added or removed that are not reflected in the included configuration file. This case should be taken into account in your own configuration and adjusted if necessary.
-Of course you can modify ```$HOME/Build/poky-3.2/build/<machine>/conf/local.conf``` with your own requirements and use it as a separate configuration file for a machine type.
+Of course you can modify ```$HOME/Build/poky-3.2.4/build/<machine>/conf/local.conf``` with your own requirements and use it as a separate configuration file for a machine type.
 
 #### Pattern configuration for bblayers.conf:
 
-> $HOME/build/poky-3.2/build/```<machine>```/conf/bblayers.conf
+> $HOME/build/poky-3.2.4/build/```<machine>```/conf/bblayers.conf
 
 ```bitbake
 # POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
@@ -186,20 +186,20 @@ BBPATH = "${TOPDIR}"
 BBFILES ?= ""
 
 BBLAYERS ?= " \
-  /home/<username>/build/poky-3.2/meta \
-  /home/<username>/build/poky-3.2/meta-poky \
-  /home/<username>/build/poky-3.2/meta-yocto-bsp \
+  /home/<username>/build/poky-3.2.4/meta \
+  /home/<username>/build/poky-3.2.4/meta-poky \
+  /home/<username>/build/poky-3.2.4/meta-yocto-bsp \
   "
 BBLAYERS += " \
-			/home/<username>/build/poky-3.2/meta-neutrino \
-			/home/<username>/build/poky-3.2/meta-<machine-brand-or-bsp-name> \
-			/home/<username>/build/poky-3.2/meta-openembedded/meta-oe \
+			/home/<username>/build/poky-3.2.4/meta-neutrino \
+			/home/<username>/build/poky-3.2.4/meta-<machine-brand-or-bsp-name> \
+			/home/<username>/build/poky-3.2.4/meta-openembedded/meta-oe \
 			"
 BBLAYERS += " \
-				/home/<username>/build/poky-3.2/meta-python2 \
+				/home/<username>/build/poky-3.2.4/meta-python2 \
 				"
 BBLAYERS += " \
-				/home/<username>/build/poky-3.2/meta-qt5 \
+				/home/<username>/build/poky-3.2.4/meta-qt5 \
 				"
 ```
 

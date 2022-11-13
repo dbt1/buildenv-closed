@@ -7,7 +7,7 @@ TIMESTAMP=`date '+%Y%m%d_%H%M%S'`
 
 # only current version
 # IMAGE_VERSION=`git -C $BASEPATH rev-parse --abbrev-ref HEAD`
-IMAGE_VERSION="3.2"
+IMAGE_VERSION="3.2.4"
 
 FILES_DIR="$BASEPATH/files"
 
