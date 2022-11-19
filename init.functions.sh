@@ -57,6 +57,8 @@ function get_metaname () {
 		META_NAME="hisilicon"
 	elif [ "$TMP_NAME" == "osmio4k" ] || [ "$TMP_NAME" == "osmio4kplus" ]; then
 		META_NAME="edision"
+    elif [ "$TMP_NAME" == "e4hdultra" ]; then
+		META_NAME="ceryon"
 	else
 		META_NAME=$TMP_NAME
 	fi
