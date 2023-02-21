@@ -36,7 +36,7 @@ git config --global user.user "Your Name"
 
 > ### 1. Clone init script.
 ```bash
-git clone https://github.com/tuxbox-neutrino/build.git
+git clone https://github.com/dbt1/buildenv.git
 cd build
 ```
 
