@@ -1,79 +1,33 @@
+### See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-CONF_VERSION
 CONF_VERSION = "1"
 
-### Host variables
-#
-# Determine how many tasks bitbake should run in parallel:
-#
-#BB_NUMBER_THREADS = "8"
-#
-# Determine how many processes make should run in parallel when running compile tasks:
-#
-#PARALLEL_MAKE = "-j 8"
-# Note: For your decision you can get information about core and threads at your machine with this command:
-#  ~ $  lscpu | grep -E '^Thread|^CPU\('
+### Host options
+#   Determine how many tasks bitbake should run in parallel:
+#   NOTE: The build system already calculates the optimized values for your host system.
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-BB_NUMBER_THREADS
+BB_NUMBER_THREADS = "16"
+#   Determine how many processes make should run in parallel when running compile tasks.
+#   NOTE: For your decision you can get information about core and threads at your machine with this command:
+#   ~ $  lscpu | grep -E '^Thread|^CPU\('
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-PARALLEL_MAKE
+PARALLEL_MAKE = "-j 8"
 
 ### Specifies the time (in seconds) after which to unload the BitBake server due to inactivity.
 #   Set BB_SERVER_TIMEOUT to determine how long the BitBake server stays resident between invocations.
-#
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-BB_SERVER_TIMEOUT
 #BB_SERVER_TIMEOUT = "20"
 
-### With rm_work enabled, this variable specifies that work directories should not be removed after build process.
-#   If this variable is activated, the memory requirement is significantly reduced.
-#   Defined exceptions are listed within variable RM_WORK_EXCLUDE.
-#
-INHERIT += "rm_work"
-RM_WORK_EXCLUDE += "neutrino-image base-files"
-
-### Prevent splitting out debug information during packaging
-#   see: https://docs.yoctoproject.org/ref-manual/variables.html#term-INHIBIT_PACKAGE_DEBUG_SPLIT
-#
-#INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
-
-### Base directory of the OpenEmbedded build system used by build output and intermediate files (other than the shared state cache). By default, the TMPDIR variable points to tmp within the 
-#   build directory.
-#
-#TMPDIR = "${TOPDIR}/tmp"
-
-### General area of the OpenEmbedded build system used to place images, packages, SDKs, and other output files that are ready to be used outside of the build system. By default, this directory 
-#   resides within the build directory as ${TMPDIR}/deploy.
-#
-#DEPLOY_DIR = "${TMPDIR}/deploy"
-
-### base build and source directory
-#
-YOCTO_BASEDIR = "${COREBASE}"
-
-### Source download storage location (read/write)
-#
-DL_DIR ?= "${COREBASE}/yocto-downloads"
-#DL_DIR = "${HOME}/Archive"
-
-### Directory for the shared state cache. By default, the SSTATE_DIR variable points to sstate-cache within the build directory as ${TOPDIR}/sstate-cache,
-# but it's a good idea to place it into your user directory, so that this folder is always available in case the build folder should be deleted anyway.
-#
-#SSTATE_DIR = "${TOPDIR}/sstate-cache"
-SSTATE_DIR = "${HOME}/sstate-cache"
-
-### Share ccache files between different builds
-#   Set CCACHE_TOP_DIR to a shared dir
-#   CCACHE_TOP_DIR = /path/to/shared_ccache/
-#CCACHE_TOP_DIR = "${TMPDIR}/ccache"
-# recommended:
-CCACHE_TOP_DIR = "${HOME}/.ccache"
-
-### sdk options
-#
-#SDKMACHINE ?= "i686"
+### SDK options
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-SDKMACHINE
+#SDKMACHINE = "i686"
 SDKMACHINE = "x86_64"
 #SDKIMAGE_FEATURES="dev-pkgs dbg-pkgs src-pkgs "
 
 ### time zone
-#
 DEFAULT_TIMEZONE = "Europe/Berlin"
 
 ### Disk Space Monitoring during the build. Default disabled, but it's a good Idea to enable.
 #   see: https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#var-BB_DISKMON_DIRS
-#
 BB_DISKMON_DIRS = "\
     STOPTASKS,${TMPDIR},1G,100K \
     STOPTASKS,${DL_DIR},1G,100K \
@@ -84,7 +38,6 @@ BB_DISKMON_DIRS = "\
 " 
 
 ### Hash Equivalence
-#
 # Enable support for automatically running a local hash equivalence server and
 # instruct bitbake to use a hash equivalence aware signature generator. Hash
 # equivalence improves reuse of sstate by detecting when a given sstate
@@ -100,172 +53,264 @@ BB_SIGNATURE_HANDLER = "OEEquivHash"
 BB_DANGLINGAPPENDS_WARNONLY = "1"
 
 ### Qemu configuration
-#
 PACKAGECONFIG_pn-qemu-native = "sdl"
 
+### Save disk space during build process.
+#   With rm_work enabled, this variable specifies that work directories should not be removed after build process.
+#   If this variable is activated, the memory requirement is significantly reduced.
+#   Defined exceptions are listed within variable RM_WORK_EXCLUDE.
+#   Comment out this entry, if you want to keep all built content within work directories.
+#   See: https://docs.yoctoproject.org/ref-manual/classes.html#ref-classes-rm-work
+INHERIT += "rm_work"
+#   These targets are exluded from rm_work.
+RM_WORK_EXCLUDE += "neutrino-image base-files neutrino-webif neutrino-logos neutrino-feed-config"
+
+### Source download storage location (read/write)
+#   It's recommended outsourcing the download archive.
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=sdkimage_features#term-DL_DIR
+#DL_DIR ?= "${COREBASE}/yocto-downloads"
+DL_DIR = "${HOME}/Archive"
+
+### Base directory of the OpenEmbedded build system used by build output and intermediate files (other than the shared state cache).
+#   By default, the TMPDIR variable points to tmp within the build directory.
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=sdkimage_features#term-TMPDIR
+#TMPDIR = "${TOPDIR}/tmp"
+
+### base build and source directory
+YOCTO_BASEDIR = "${COREBASE}"
+
+### Some targets are using ccache. Here you can set the path for ccache store. Default it is located wthin the TMPDIR,
+#   but it's recommended to set outside of the buildsystem into a shared directory
+#   NOTE: ccache is not recommended for global usage by Yocto, but we have enabled this class only for some few recipes (eg. samba, neutrino). 
+#   According to current knowledge, there are no bad side effects for these recipes. On the contrary,
+#   this has proven to be helpful for these recipes.
+#   See: https://docs.yoctoproject.org/ref-manual/classes.html?highlight=ccache#ccache-bbclass
+#CCACHE_TOP_DIR = "${TMPDIR}/ccache"
+CCACHE_TOP_DIR = "${HOME}/.ccache"
+
+### Where the OpenEmbedded build system place images, packages, SDKs, and other output files that are ready
+#   to be used outside of the build system.
+#   See also: https://docs.yoctoproject.org/ref-manual/variables.html#term-DEPLOY_DIR
+#   By default, this directory resides within the Build Directory as ${TMPDIR}/deploy.
+#   NOTE: Change this path only, if it is really needed for by your requirement!
+#DEPLOY_DIR = "${TMPDIR}/deploy"
+#   Where to fo find the generated images.
+#DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images"
+#   Where to fo find the generated packages. Only ipk's are supported by Neutrino package manager.
+#DEPLOY_DIR_IPK = "${DEPLOY_DIR}/ipk"
+
+### Directory for the shared state cache. By default, the SSTATE_DIR variable points to sstate-cache within the build directory as ${TOPDIR}/sstate-cache,
+#   but it's a good idea to place it into a shared directory, so that this folder is always available in case the build folder should be deleted anyway or
+#   you want to use sstate cache for other builds in future. It goes without saying that there is sufficient memory space available.
+#   NOTE: This directory is a very precious. Don't delete it lightly.
+#SSTATE_DIR = "${TOPDIR}/sstate-cache"
+SSTATE_DIR = "${HOME}/sstate-cache/${DISTRO_VERSION}"
+
+### Tipp: use sstate mirrors
+#   Speed up your complete new package build or after deleted tmp dir or sstate-cache and guard against fetcher failures.
+#   Official mirrors to find here: http://sstate.yoctoproject.org/
+#   Ensure you have a fast internet. After 1st build you can disable this
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=sdkimage_features#term-SSTATE_MIRRORS
+#SSTATE_MIRRORS += "\
+#     file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/2.7.3/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.0.3/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.1/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.1.1/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.1.2/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.2/PATH;downloadfilename=PATH \n \
+#     file://.* http://sstate.yoctoproject.org/3.2.4/PATH;downloadfilename=PATH \n \
+# "
+#SSTATE_MIRRORS += "\
+#    file://.* http://sstate.yoctoproject.org/${DISTRO_VERSION}/PATH;downloadfilename=PATH \n \
+#"
+#   This is our own stock of sstate cache related of last tuxbox builds.
+SSTATE_MIRRORS += "\
+    file://.* https://n4k.sourceforge.io/sstate-cache/${DISTRO_VERSION}/sstate-cache/PATH;downloadfilename=PATH \n \
+"
+SSTATE_MIRRORS += "\
+    file://.* https://n4k.sourceforge.io/sstate-cache/devel/sstate-cache/PATH;downloadfilename=PATH \n \
+"
+
+#   If you are using the TuxboxBuilder VM and it's running, you can use its sstate cache related of last builds.
+#   NOTE: www server of Tuxbox-Builder VM must be enabled and configured so that it can be reached. 
+#   If required, replace the server url with your own TuxboxBuilder server url
+#SSTATE_MIRRORS += "\
+#     file://.* http://tuxbox-builder/sstate-cache/PATH;downloadfilename=PATH \n \
+#"
+
+#   If you want to use any local sstate caches, you can add your own local directory.
+#   You should ensure directories are exist.
+#   These are samples for usage your own local sstate mirror (read only)
+# SSTATE_MIRRORS += "\
+#       file://.* file:///${HOME}/sstate-cache/PATH;downloadfilename=PATH \n \
+# "
+# SSTATE_MIRRORS += "\
+#       file://.* file:///${HOME}/sstate-cache/3.2/PATH;downloadfilename=PATH \n \
+# "
+# SSTATE_MIRRORS += "\
+#       file://.* file:///${HOME}/sstate-cache/3.2.4/PATH;downloadfilename=PATH \n \
+# "
+
 ### Image settings
-# Image size:
-# possible are "small" or "normal" (normal means the same like empty string)
-#
-#IMAGESIZE = "normal"
+#   Image size:
+#   possible are "small" or "normal" (normal means the same like empty string)
+IMAGESIZE = "normal"
 #IMAGESIZE = "small"
-#
-# Which neutrino source will be used:
-# Choose neutrino source. Possible values are "tuxbox", "tango" or "ni"
-# Note: Successful build of foreign neutrino source is not guaranteed.
-# Don't remove from local.conf
-#
-FLAVOUR = "tuxbox"
-#
 
 ### Set DISTRO
-# don't remove, it's required
-#
+#   NOTE: don't remove, it's required, but you can set an own name
 DISTRO = "tuxbox"
 
-### Distro codename
-#
-#DISTRO_CODENAME = ""
+### Which neutrino and libstb-hal sources will be used. Possible values are "tuxbox", "tango" or "ni"
+#   NOTE:
+#   This option is only to be understood as a relic from the early days of this meta layer 
+#   and is therefore not necessarily maintained anymore. There is no guarantee that the build process 
+#   for foreign sources will be successful.
+#   The more effective method would be to transfer the Neutrino and 
+#   libstb-hal sources together into the workspace and use Git's functionality to integrate 
+#   third-party repositories. So you are not be limited to few selected sources and can also use 
+#   their branches and adapt the build process accordingly.
+#   Therefore, it must be expected that FLAVOUR option will soon be completely removed.
+#   See: https://docs.yoctoproject.org/current/ref-manual/devtool-reference.html#modifying-an-existing-recipe
+#   and: https://docs.yoctoproject.org/current/ref-manual/devtool-reference.html
+#FLAVOUR = "tuxbox"
 
 ### Image filename arranging
-# set a distro name if required
-#
+#   set a distro name if required
 #DISTRO_NAME = "${DISTRO}"
 
 ### General image name
-#
 #IMAGE_BASENAME = "${DISTRO_NAME}"
-# proposed:
-#
 IMAGE_BASENAME = "my-image"
 
-### Distro version
-#
-#DISTRO_VERSION = "${DISTRO_BUILD_VERSION}"
-#DISTRO_VERSION = "22.5.0"
+### Distro codename
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-DISTRO_CODENAME
+#DISTRO_CODENAME = ""
 
-### Release type string
-#  Possible types are beta, release, nightly, all others means what ever you want
-#
-#DISTRO_TYPE = "beta"
+### Distro version: required for version string within the .version file and defined image version
+#DISTRO_VERSION_NUMBER_MAJOR = "3"
+#DISTRO_VERSION_NUMBER_MINOR = "2"
+#DISTRO_VERSION_NUMBER_MICRO = "4"
+#DISTRO_VERSION_NUMBER_CYCLE = "${DISTRO_VERSION_NUMBER_MAJOR}${DISTRO_VERSION_NUMBER_MINOR}${DISTRO_VERSION_NUMBER_MICRO}"
+#DISTRO_VERSION = "${DISTRO_VERSION_NUMBER_MAJOR}.${DISTRO_VERSION_NUMBER_MINOR}.${DISTRO_VERSION_NUMBER_MICRO}"
 
-### IMAGE_NAME_SUFFIXES:
-#
-#IMAGE_VERSION_SUFFIX="-${DATE}"
-### proposed:
+### Release distro type string
+#   Possible types are beta, release, nightly, all others means what ever you want
+DISTRO_TYPE = "beta"
+#DISTRO_TYPE = "release"
+
+### Image name suffixes:
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html#term-IMAGE_NAME
+#IMAGE_VERSION_SUFFIX="-${DATETIME}"
+### proposed samples:
 #IMAGE_VERSION_SUFFIX="-${DISTRO_TYPE}"
-#IMAGE_VERSION_SUFFIX="-${DATE}-${DISTRO_TYPE}"
+#IMAGE_VERSION_SUFFIX="-${DATETIME}-${DISTRO_TYPE}"
 #IMAGE_VERSION_SUFFIX="-${PR}"
 #IMAGE_VERSION_SUFFIX="-${PR}-${DISTRO_TYPE}"
+### Usage of ${DATE} is possible but not recommended, makes only sense for really once daily build. 
 #IMAGE_VERSION_SUFFIX="-${PR}.${DATE}"
 #IMAGE_VERSION_SUFFIX="-${PR}.${DATE}-${DISTRO_TYPE}"
 
-### Complete image name
-#
+### Set image name
+#   The name of the output image files minus the extension. This variable is derived using the IMAGE_BASENAME, MACHINE, and IMAGE_VERSION_SUFFIX variables:
+#   Default and origin by yocto its set to: IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE}${IMAGE_VERSION_SUFFIX}"
+#   We are using this as default image name:
 #IMAGE_NAME = "${IMAGE_BASENAME}-${MACHINE_BRAND}-${MACHINE_NAME}-${DISTRO_VERSION}${IMAGE_VERSION_SUFFIX}"
 
+### Update server configuration for update feeds and update server configuration
+#   Web server from which packages and images are updated. Points as default to the www directory of the host
+#   URL-template (only local in this config file)
+#   for usage of these url's you should make a symlink as super user to the image and package directories
+#   where do find the buildsystem the distro type file (beta.txt, release.txt ...), this file contains list of image urls for download
+#RELEASE_TEXT_LOCATION_FILE = "${DEPLOY_DIR_IMAGE}/${DISTRO_TYPE}.txt"
+
+### Server URL which contains update and packages. 
+#   Web server must be running and html content must point to the toplevel directory which contains the deployed images
+#   NOTE: @hostname@ is only a placeholder and will be replaced with current hostname of your build host automatically. @hostname@ could be the current host IP too. 
+#   or any other domain.tld. If required, replace @hostname@ with the host IP or Domain.
+#UPDATE_SERVER_URL = "http://@hostname@"
+
+##  URL to the dist directory, must contain the content of the deployed images and packages
+#DIST_URL = "${UPDATE_SERVER_URL}/dist"
+
+##  URL to the images, must contain the content of the image dir and its a sub dir to specific machine build and image dir which contains machine images
+#IMAGE_LOCATION_URL = "${DIST_URL}/${DISTRO_VERSION}/${MACHINE}/images/${MACHINE}"
+
+##  URL to package feed
+#IPK_FEED_SERVER ?= "${DIST_URL}/${DISTRO_VERSION}/${MACHINE}/ipk"
+
+### Package type configuration
+#   See: https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_CLASSES
+#   NOTE: Only ipk's are suported by Neutrino package manager.
+PACKAGE_CLASSES = "package_ipk"
+
+### Prevent splitting out debug information during packaging
+#   see: https://docs.yoctoproject.org/ref-manual/variables.html#term-INHIBIT_PACKAGE_DEBUG_SPLIT
+#INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
+### Add additional lines for /etc/os-release and .version contents 
+#HOME_URL = "https://github.com/tuxbox-neutrino"
+#SUPPORT_URL = "https://wiki.tuxbox-neutrino.org"
+#BUG_REPORT_URL = "https://forum.tuxbox-neutrino.org"
+
 ### Default image root password
-# set initial password for user root. Keep empty for root:
-#
+#   set initial password for user root. Keep empty for root:
 ROOTPW = ""
 
 ### Add Image Maintainer and host build machine here
-#
-# CREATOR = "${USER}"
-# KBUILD_BUILD_USER = "${CREATOR}"
+#CREATOR = "${USER}"
+#KBUILD_BUILD_USER = "${CREATOR}"
 KBUILD_BUILD_HOST = "127.0.0.1"
 
-### Git configuration on target machine ... needed by etckeeper
-#
+### Git configuration on target machine.
+#   NOTE: Mainly needed by etckeeper.
 GIT_USER = "root"
 MAIL = "root@${MACHINE}"
 
 ### dev keys for neutrino gui and weather plugin
-# NOTE: Here you see empty entries! NOT WORKING! Own keys are required!
-# You can also include a file eg. named "local.conf.devkeys.inc"
-# Modify and add these line:
-# include /<path>/<to>/local.conf.devkeys.inc
-#
-# NOTE: Beginning on March 31st, 2023 the Dark Sky API will not longer be available.
-# WeatherKit, a new Apple API available on iOS, iPadOS, macOS, tvOS, 
-# and web that provides access to the new Apple Weather forecast data.
-# The WEATHER_DEV_KEY variable is not longer used for darksky keys
-# Currently used provider is: openweather map
-WEATHER_DEV_KEY = ""
-# YouTube, TMDB, OMDB, ShoutCast
-YT_DEV_KEY = ""
+#   NOTE: Here you see empty entries! NOT WORKING! Own keys are required!
+#   You can also include a file eg. named "local.conf.devkeys.inc"
+#   Modify and add these line:
+#   include /<path>/<to>/local.conf.devkeys.inc
+##  TMDB, OMDB, ShoutCast
 TMDB_DEV_KEY = ""
-SHOUTCAST_DEV_KEY = ""
 OMDB_API_KEY = ""
+SHOUTCAST_DEV_KEY = ""
+##  Weather
+#   NOTE: Beginning on March 31st, 2023 the Dark Sky API will not longer be available.
+#   WeatherKit, a new Apple API available on iOS, iPadOS, macOS, tvOS, 
+#   and web that provides access to the new Apple Weather forecast data.
+#   The WEATHER_DEV_KEY variable is not longer used for darksky keys
+#   Currently used provider is: openweather map
+WEATHER_DEV_KEY = ""
+#   NOTE: YouTube functionality of Neutrino was completely removed in 2022, this key has no effects anymore, but YouTube is usable further with plugins. 
+YT_DEV_KEY = ""
 
+### EXTRA_OECONF modifications.
+#   NOTE! For global use within build-system see: https://docs.yoctoproject.org/ref-manual/variables.html#term-EXTRA_OECONF 
 ### Extra build config options for neutrino build
-#   e.g: to enable the neutrino test menu
-#   NOTE! Works only with FLAVOUR = "tuxbox"
-#   Keep this entry disabled, if you want to use an other FLAVOUR than "tuxbox".
-#   and add these lines into your local.conf within your build directory
-# EXTRA_OECONF_append_pn-neutrino-mp += " \
-# 	--enable-testing \
-# "
+#   eg: to enable the neutrino test menu.
+#   NOTE! --enable-testing Works only with tuxbox-neutrino, but you
+#   can keep this entry disabled. If you want to use an other FLAVOUR than "tuxbox", add these lines into your 
+#   local.conf within your build directory.
+#EXTRA_OECONF_append_pn-neutrino-mp += " \
+#		--enable-testing \
+#"
 
 ### Extra build config options for gdb build
-#
 #EXTRA_OECONF_append_pn-gdb = "--with-system-gdbinit=/etc/gdbinit"
 
 ### Experimental kodi, qtwebflix
 #   NOTE: will build only with gatesgarth/3.2.4
 #   It's not guaranteed, that build will be successfully.
-#   Tipp: Alternatively, you can add targets to EXTRA IMAGE DEPENDS or IMAGE_INSTALL.
+#   Alternatively, you can add targets to EXTRA IMAGE DEPENDS or IMAGE_INSTALL.
 #
 #DEPENDS_pn-neutrino-image += "kodi qtwebflix"
 
-### Package feed configuration
-#
-PACKAGE_CLASSES = "package_ipk"
-# Prevents splitting out debug information during packaging.
-#INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
-#
-### Update feeds
-# Web server from which packages and images are updated. Points as default to www directory of the host
-# URL-template (only local in this config file)
-# for usage of these url's you should make a symlink as super user to the image and package directories
-#
-#UPDATE_SERVER_URL = "http://${KBUILD_BUILD_HOST}"
-#UPDATE_SERVER_URL = "http://<hostname>"
-#UPDATE_SERVER_URL = "http://localhost"
-UPDATE_SERVER_URL = "file:///var/www/html"
-#UPDATE_SERVER_URL = "https://n4k.sourceforge.io"
-#UPDATE_SERVER_URL = "http://n4k.sourceforge.io"
-#
-# If local feed with Tuxbox-Builder VM is available:
-#UPDATE_SERVER_URL = "http://<Tuxbox-Builder IP or HOSTNAME>"
-
-### Package manager configuration
-#
-DISTRO_FEED_VERSION = "${DISTRO_VERSION_NUMBER_MAJOR}.${DISTRO_VERSION_NUMBER_MINOR}"
-#DISTRO_FEED_VERSION = "${DISTRO_VERSION_NUMBER}"
-#
-#IPK_FEED_SERVER = "file:///media/sda1/service/ipk"
-# If local feed at Tuxbox-Builder VM is in use (see above):
-IPK_FEED_SERVER = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACHINE}/ipk"
-
-### Image update configuration
-#
-IMAGE_LOCATION = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACHINE}/images"
-
-# RELEASE_TEXT_LOCATION = "file:///media/sda1/service/image/imageversion"
-RELEASE_TEXT_LOCATION_HOST = "${DEPLOY_DIR_IMAGE}/${DISTRO_TYPE}.txt"
-RELEASE_TEXT_LOCATION = "${UPDATE_SERVER_URL}/dist/${DISTRO_FEED_VERSION}/${MACHINE}/images/${DISTRO_TYPE}.txt"
-
-### Add additional lines for /etc/os-release and .version contents 
-#
-#HOME_URL = "https://github.com/tuxbox-neutrino"
-#SUPPORT_URL = "https://wiki.tuxbox-neutrino.org"
-#BUG_REPORT_URL = "https://forum.tuxbox-neutrino.org"
-
-### URLs for download mirrors from Yocto 
-#
-# global archive and source urls
-ARCHIVE_SOURCE_URL = "https://n4k.sourceforge.io/sources"
+### URLs for download mirrors from Yocto or our own stock 
+#   global archive and source urls
+ARCHIVE_SOURCE_URL = "https://n4k.sourceforge.io/archive/Archive"
 YOCTO_SOURCE_URL = "http://www.yoctoproject.org/sources"
 
 PREMIRRORS_prepend = "\
@@ -276,80 +321,37 @@ PREMIRRORS_prepend = "\
      https://.*/.* ${YOCTO_SOURCE_URL}/ \n \
 "
 ### Download mirrors from Local file mirrors (read only)
-#
-# PREMIRRORS_prepend = "\
+#PREMIRRORS_prepend = "\
 #     file://.*/.*     file://${HOME}/Downloads/* \n \
 # "
 
 ### Source mirror urls
 #    see: https://wiki.yoctoproject.org/wiki/How_do_I#Q:_How_do_I_create_my_own_source_download_mirror_.3F
-#
 #    This is our own stock of archives, those are created by our image builds.
 SOURCE_MIRROR_URL = "${ARCHIVE_SOURCE_URL}"
 INHERIT += "own-mirrors" 
 BB_GENERATE_MIRROR_TARBALLS = "0" 
 #BB_NO_NETWORK = "1"
 
-### Tipp: use sstate mirrors
-#
-# Speed up your complete new package build or after deleted tmp dir or sstate-cache and guard against fetcher failures.
-# Official mirrors to find here: http://sstate.yoctoproject.org/
-# Ensure you have a fast internet. After 1st build you can disable this
-# SSTATE_MIRRORS += "\
-#     file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/2.7.3/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/3.0.3/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/3.1/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/3.1.1/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/3.1.2/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/3.2/PATH;downloadfilename=PATH \n \
-#     file://.* http://sstate.yoctoproject.org/3.2.4/PATH;downloadfilename=PATH \n \
-# "
-SSTATE_MIRRORS += "\
-    file://.* http://sstate.yoctoproject.org/${DISTRO_VERSION}/PATH;downloadfilename=PATH \n \
-"
-# This is our own stock of sstate cache related of last tuxbox builds.
-SSTATE_MIRRORS += "\
-    file://.* https://n4k.sourceforge.io/sstate-cache/3.2/sstate-cache/PATH;downloadfilename=PATH \n \
-    file://.* https://n4k.sourceforge.io/sstate-cache/devel/sstate-cache/PATH;downloadfilename=PATH \n \
-"
-
-# If you are using the TuxboxBuilder VM and it's running, you can use its sstate cache related of last builds.
-# Note: www server of Tuxbox-Builder VM must be enabled and configured so that it can be reached. 
-# If required, replace the server url with your own server url
-#
-#SSTATE_MIRRORS += "\
-#     file://.* http://tuxbox-builder/sstate-cache/PATH;downloadfilename=PATH \n \
-#"
-## Sample for usage your own local sstate mirror (read only)
-#
-# SSTATE_MIRRORS += "\
-#       file://.* file:///${HOME}/sstate-cache/PATH;downloadfilename=PATH \n \
-# "
-
 ### Masked recipes
-#
-# This will ignore recipes to build.
-# NOTE: Some masked targets with related depends could break the build.
-# BBMASK += "/meta-neutrino/recipes-qt/qt5"
+#   This will ignore recipes to build.
+#   NOTE: Some masked targets with related depends could break the build.
+#BBMASK += "/meta-neutrino/recipes-qt/qt5"
 
 ### Build packages but do not install packages into image
-# https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#var-EXTRA_IMAGEDEPENDS
-#
-# EXTRA_IMAGEDEPENDS += " \
+#   https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#var-EXTRA_IMAGEDEPENDS
+#EXTRA_IMAGEDEPENDS += " \
 # 			gdb \
 # 			samba \
 # 			vsftpd \
 # "
-# EXTRA_IMAGEDEPENDS += " \
+#EXTRA_IMAGEDEPENDS += " \
 # 			kodi \
 # "
 
 ### Put additional packages that should be packaged into your image. Separated with a whitespace. or use IMAGE_INSTALL += ...
-
-# https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#var-IMAGE_INSTALL
-# See: ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
-#
+#   https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#var-IMAGE_INSTALL
+#   See: ./meta-neutrino/recipes-images/images/neutrino-image-base.inc.
 IMAGE_INSTALL += " \
 	stb-flash \
 	msgbox \
@@ -363,35 +365,32 @@ IMAGE_INSTALL += " \
 # IMAGE_INSTALL += " \
 #	neutrino-3rd-party-themes \
 #"
-#
 # IMAGE_INSTALL += " qtwebflix"
 # IMAGE_INSTALL += " gdb-dbg glibc-dbg glibc-thread-db"
 
-
-# If you want to remove already contained packages from IMAGE_INSTALL use this:
-# IMAGE_INSTALL_remove += " \
+### Examples to ...
+#   ... remove already contained packages from IMAGE_INSTALL use this:
+#I MAGE_INSTALL_remove += " \
 # 	<target1> \
 # 	<target2> \
 # "
 
-### To build packages without install into image use PACKAGE_EXCLUDE
-# see: https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#var-PACKAGE_EXCLUDE
+### ... build packages without install into image use PACKAGE_EXCLUDE
+#   see: https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#var-PACKAGE_EXCLUDE
 # PACKAGE_EXCLUDE += \
 #	<package1> \
 #	<package2> \
 #"
 
-### Example to replace a source url via local.conf
-#
+### ... replace a source url via local.conf
 # SRC_URI_pn-x264 = "git://code.videolan.org/videolan/x264;branch=stable;protocol=https \
 # "
 
 ### base-files rewrite
-#
 #LICENSE_pn-base-files = "CLOSED"
 #LIC_FILES_CHKSUM_pn-base-files = ""
 #BBMASK += "/meta-neutrino/recipes-images/base-files/base-files_%.bbappend"
-#FILESEXTRAPATHS_prepend := "/home/tg/devel/local-yocto-files/base-files:"
+#FILESEXTRAPATHS_prepend := "${HOME}/devel/local-yocto-files/base-files:"
 
 ### Enabling and Disabling Build History
 #   see> https://docs.yoctoproject.org/singleindex.html#enabling-and-disabling-build-history
@@ -399,6 +398,5 @@ IMAGE_INSTALL += " \
 #BUILDHISTORY_COMMIT = "1"
 
 ### Replace some lame fetch urls
-#
 #BINUTILS_GIT_URI = "git://github.com/bminor/binutils-gdb.git;branch=${BRANCH};protocol=https"
 #GLIBC_GIT_URI = "git://github.com/bminor/glibc.git;branch=release/2.32/master;name=glibc"
