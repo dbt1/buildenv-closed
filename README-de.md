@@ -38,7 +38,7 @@ git config --global user.user "Dein Name"
 > ### 1. Init-Skript klonen.
 ```bash
 git clone https://github.com/dbt1/buildenv.git
-cd build
+cd buildenv
 ```
 
 > ### 2. Init-Skript ausführen
