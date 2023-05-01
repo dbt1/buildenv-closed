@@ -264,7 +264,18 @@ ROOTPW = ""
 KBUILD_BUILD_HOST = "127.0.0.1"
 
 ### Git configuration on target machine.
-#   NOTE: Mainly needed by etckeeper.
+#   To utilize Etckeeper and Neutrino plugins, Git is a prerequisite.
+#   Thus, configuring Git on the target machine is imperative.
+#   However, keep in mind that Etckeeper should not be pre-installed on 
+#   the image as it would augment the image size and increase storage requirements
+#   during image creation. Therefore, it is recommended to install Etckeeper only 
+#   after successfully flashing the image. However, for devices with limited storage 
+#   space for the root filesystem, ensure that enough space is available for 
+#   installing Etckeeper to avoid runtime errors.
+#   Furthermore, note that Git's databases can bloat over time, 
+#   leading to unnecessarily large storage consumption. If Git is provided as an optional
+#   downloader in some plugins, it is advisable to avoid using it unless necessary.
+#   Use Git with caution.
 GIT_USER = "root"
 MAIL = "root@${MACHINE}"
 
