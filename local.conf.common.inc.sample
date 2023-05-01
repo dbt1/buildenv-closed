@@ -5,12 +5,12 @@ CONF_VERSION = "1"
 #   Determine how many tasks bitbake should run in parallel:
 #   NOTE: The build system already calculates the optimized values for your host system.
 #   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-BB_NUMBER_THREADS
-BB_NUMBER_THREADS = "16"
+#BB_NUMBER_THREADS = "16"
 #   Determine how many processes make should run in parallel when running compile tasks.
 #   NOTE: For your decision you can get information about core and threads at your machine with this command:
 #   ~ $  lscpu | grep -E '^Thread|^CPU\('
 #   See: https://docs.yoctoproject.org/ref-manual/variables.html?highlight=distro_codename#term-PARALLEL_MAKE
-PARALLEL_MAKE = "-j 8"
+#PARALLEL_MAKE = "-j 8"
 
 ### Specifies the time (in seconds) after which to unload the BitBake server due to inactivity.
 #   Set BB_SERVER_TIMEOUT to determine how long the BitBake server stays resident between invocations.
