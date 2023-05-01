@@ -2,11 +2,11 @@
 source init.functions.sh
 #set -x
 
-BASEPATH=`pwd`
-TIMESTAMP=`date '+%Y%m%d_%H%M%S'`
+BASEPATH=$(pwd)
+TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
 
 # only current version
-# IMAGE_VERSION=`git -C $BASEPATH rev-parse --abbrev-ref HEAD`
+# IMAGE_VERSION=$(git -C $BASEPATH rev-parse --abbrev-ref HEAD)
 IMAGE_VERSION="3.2.4"
 
 FILES_DIR="$BASEPATH/files"
@@ -56,7 +56,7 @@ else
 	MACHINE=$1
 fi
 
-if [ `is_valid_machine "$MACHINE"` == false ]; then
+if [ $(is_valid_machine "$MACHINE") == false ]; then
     echo -e "\033[31;1mERROR:\tNo valid machine defined.\033[0m\n\t$HINT_SYNTAX.
     \tKeep parameter <machine> empty to initialize all possible machine types or set your favorite machine.
     \tPossible types are:
@@ -145,18 +145,18 @@ echo -e "\033[32;1mOK ...\033[0m\n"
 
 
 # gfutures
-if [ "$MACHINE" == "all" ] || [ `is_required_machine_layer "' $MACHINES_GFUTURES '"` == true ]; then
+if [ "$MACHINE" == "all" ] || [ $(is_required_machine_layer "' $MACHINES_GFUTURES '") == true ]; then
 	# gfutures
 	clone_meta '' $COMPATIBLE_BRANCH $GFUTURES_LAYER_GIT_URL '' $BUILD_ROOT_DIR/$GFUTURES_LAYER_NAME
 	echo -e "\033[32;1mOK ...\033[0m\n"
 fi
 # airdigital
-if [ "$MACHINE" == "all" ] || [ `is_required_machine_layer "' $MACHINES_AIRDIGITAL '"` == true ]; then
+if [ "$MACHINE" == "all" ] || [ $(is_required_machine_layer "' $MACHINES_AIRDIGITAL '") == true ]; then
 	clone_meta '' $COMPATIBLE_BRANCH $AIRDIGITAL_LAYER_GIT_URL '' $BUILD_ROOT_DIR/$AIRDIGITAL_LAYER_NAME
 	echo -e "\033[32;1mOK ...\033[0m\n"
 fi
 # edision
-if [ "$MACHINE" == "all" ] || [ `is_required_machine_layer "' $MACHINES_EDISION '"` == true ]; then
+if [ "$MACHINE" == "all" ] || [ $(is_required_machine_layer "' $MACHINES_EDISION '") == true ]; then
 	clone_meta '' $COMPATIBLE_BRANCH $EDISION_LAYER_GIT_URL '' $BUILD_ROOT_DIR/$EDISION_LAYER_NAME
 	echo -e "\033[32;1mOK ...\033[0m\n"
 fi
@@ -167,7 +167,7 @@ fi
 	echo -e "\033[32;1mOK ...\033[0m\n"
 fi
 # ceryon
-if [ "$MACHINE" == "all" ] || [ `is_required_machine_layer "' $MACHINES_CERYON '"` == true ]; then
+if [ "$MACHINE" == "all" ] || [ $(is_required_machine_layer "' $MACHINES_CERYON '") == true ]; then
 	clone_meta '' $COMPATIBLE_BRANCH $CERYON_LAYER_GIT_URL '' $BUILD_ROOT_DIR/$CERYON_LAYER_NAME
 	echo -e "\033[32;1mOK ...\033[0m\n"
 fi
