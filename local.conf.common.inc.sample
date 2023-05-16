@@ -298,15 +298,19 @@ WEATHER_DEV_KEY = ""
 #   NOTE: YouTube functionality of Neutrino was completely removed in 2022, this key has no effects anymore, but YouTube is usable further with plugins. 
 YT_DEV_KEY = ""
 
-### EXTRA_OECONF modifications.
+## EXTRA_OECONF modifications for Neutrino.
 #   NOTE! For global use within build-system see: https://docs.yoctoproject.org/ref-manual/variables.html#term-EXTRA_OECONF 
-### Extra build config options for neutrino build
+## Extra build config options for neutrino build
 #   eg: to enable the neutrino test menu.
-#   NOTE! --enable-testing Works only with tuxbox-neutrino, but you
-#   can keep this entry disabled. If you want to use an other FLAVOUR than "tuxbox", add these lines into your 
-#   local.conf within your build directory.
+#   NOTE! --enable-testing Works only with FLAVOUR = "tuxbox".
+#   If you want to use a different FLAVOUR than 'tuxbox', keep these lines uncommented and
+#   add them to your local.conf within your build directory.
 #EXTRA_OECONF_append_pn-neutrino-mp += " \
 #		--enable-testing \
+#"
+## Uncomment these lines to disable debug mode for Neutrino.
+#EXTRA_OECONF_append_pn-neutrino-mp += " \
+#		--without-debug \
 #"
 
 ### Extra build config options for gdb build
